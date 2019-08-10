@@ -1,0 +1,33 @@
+{
+  "name": "epl_backend",
+  "version": "1.0.0",
+  "description": "exotic pet log backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exoticpetlog/epl_backend.git"
+  },
+  "author": "Addison Stavlo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/exoticpetlog/epl_backend/issues"
+  },
+  "homepage": "https://github.com/exoticpetlog/epl_backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^14.4.2",
+    "knex": "^0.19.1"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "nodemon": "^1.19.1"
+  }
+}
