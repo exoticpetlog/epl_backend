@@ -14,8 +14,18 @@ router.post("/register", async (req, res, next) => {
     password: bcrypt.hashSync(req.body.password, 8),
     email: req.body.email
   });
-  console.log(something);
   res.status(201).json(something);
+});
+
+router.post("/login", async (req, res, next) => {
+  const user = await db("users")
+    .where({ username: req.body.username })
+    .first();
+  if (bcrypt.compareSync(req.body.password, user.password)) {
+    res.status(200).json({ message: "access granted" });
+  } else {
+    res.status(400).json({ message: "access denied" });
+  }
 });
 
 module.exports = router;
