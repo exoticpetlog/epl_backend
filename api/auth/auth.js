@@ -2,14 +2,10 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const db = require("../../config/dbConfig.js");
 const jwt = require("jsonwebtoken");
+const jwtKey = process.env.JWT_SECRET;
+const authRouter = express.Router();
 
-const router = express.Router();
-
-router.get("/", (req, res, next) => {
-  res.status(200).send("Hi from Auth...");
-});
-
-router.post("/register", async (req, res, next) => {
+authRouter.post("/register", async (req, res, next) => {
   const ids = await db("users").insert({
     username: req.body.username,
     password: bcrypt.hashSync(req.body.password, 8),
@@ -22,19 +18,25 @@ router.post("/register", async (req, res, next) => {
   });
 });
 
-router.post("/login", async (req, res, next) => {
-  const user = await db("users")
-    .where({ username: req.body.username })
-    .first();
-  if (bcrypt.compareSync(req.body.password, user.password)) {
-    res
-      .status(200)
-      .json({
-        message: `Welcome Back, ${req.body.username}`,
-        token: getToken(user.id)
-      });
-  } else {
-    res.status(400).json({ message: "access denied" });
+authRouter.post("/login", async (req, res, next) => {
+  try {
+    const user = await db("users")
+      .where({ username: req.body.username })
+      .first();
+    if (user) {
+      if (bcrypt.compareSync(req.body.password, user.password)) {
+        res.status(200).json({
+          message: `Welcome Back, ${req.body.username}`,
+          token: getToken(user.id)
+        });
+      } else {
+        res.status(400).json({ message: "access denied" });
+      }
+    } else {
+      res.status(404).json({ message: "user not found" });
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -43,9 +45,27 @@ function getToken(userID) {
     {
       user_id: userID
     },
-    process.env.JWT_SECRET,
+    jwtKey,
     { expiresIn: "1h" }
   );
 }
 
-module.exports = router;
+const verifyToken = async (req, res, next) => {
+  try {
+    const decoded = jwt.verify(req.headers.authorization, jwtKey);
+    const user = await db("users")
+      .where({ id: decoded.user_id })
+      .first();
+    if (user) {
+      delete user.password;
+      req.user = user;
+      next();
+    } else {
+      res.status(404).json({ message: "user not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
+
+module.exports = { authRouter, verifyToken };
