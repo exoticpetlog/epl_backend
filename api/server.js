@@ -4,10 +4,9 @@ const { authRouter, verifyToken } = require("./auth/auth.js");
 const server = express();
 server.use(cors());
 server.use(express.json());
+
 server.use("/auth", authRouter);
-
 server.use(verifyToken);
-
 server.get("/", (req, res) => {
   res.status(200).send(req.user);
 });

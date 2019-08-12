@@ -6,16 +6,20 @@ const jwtKey = process.env.JWT_SECRET;
 const authRouter = express.Router();
 
 authRouter.post("/register", async (req, res, next) => {
-  const ids = await db("users").insert({
-    username: req.body.username,
-    password: bcrypt.hashSync(req.body.password, 8),
-    email: req.body.email
-  });
+  try {
+    const ids = await db("users").insert({
+      username: req.body.username,
+      password: bcrypt.hashSync(req.body.password, 8),
+      email: req.body.email
+    });
 
-  res.status(201).json({
-    message: `Welcome, ${req.body.username}!`,
-    token: getToken(ids[0])
-  });
+    res.status(201).json({
+      message: `Welcome, ${req.body.username}!`,
+      token: getToken(ids[0])
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 authRouter.post("/login", async (req, res, next) => {
@@ -52,16 +56,22 @@ function getToken(userID) {
 
 const verifyToken = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(req.headers.authorization, jwtKey);
-    const user = await db("users")
-      .where({ id: decoded.user_id })
-      .first();
-    if (user) {
-      delete user.password;
-      req.user = user;
-      next();
+    if (req.headers.authorization) {
+      const decoded = jwt.verify(req.headers.authorization, jwtKey);
+      const user = await db("users")
+        .where({ id: decoded.user_id })
+        .first();
+      if (user) {
+        delete user.password;
+        req.user = user;
+        next();
+      } else {
+        res.status(404).json({ message: "user not found" });
+      }
     } else {
-      res.status(404).json({ message: "user not found" });
+      res.status(400).json({
+        message: "please provide an auth token in headers as 'authorization'"
+      });
     }
   } catch (error) {
     res.status(400).json({ error });
