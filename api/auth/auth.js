@@ -57,20 +57,21 @@ authRouter.post("/login", async (req, res, next) => {
       .where({ username: req.body.username })
       .first();
 
-    if (user) {
-      // check password and respond with token
-      if (bcrypt.compareSync(req.body.password, user.password)) {
-        res.status(200).json({
-          message: `Welcome Back, ${req.body.username}`,
-          token: getToken(user.id)
-        });
-      } else {
-        // pw did not match
-        res.status(400).json({ message: "access denied" });
-      }
-    } else {
-      // no user by that name in database
+    // respond accordingly if none found
+    if (!user) {
       res.status(404).json({ message: "user not found" });
+      return;
+    }
+
+    // check password and respond with token
+    if (bcrypt.compareSync(req.body.password, user.password)) {
+      res.status(200).json({
+        message: `Welcome Back, ${req.body.username}`,
+        token: getToken(user.id)
+      });
+    } else {
+      // pw did not match
+      res.status(400).json({ message: "access denied" });
     }
   } catch (err) {
     next(err);
@@ -89,25 +90,40 @@ function getToken(userID) {
 
 const verifyToken = async (req, res, next) => {
   try {
-    if (req.headers.authorization) {
-      const decoded = jwt.verify(req.headers.authorization, jwtKey);
-      const user = await db("users")
-        .where({ id: decoded.user_id })
-        .first();
-      if (user) {
-        delete user.password;
-        req.user = user;
-        next();
-      } else {
-        res.status(404).json({ message: "user not found" });
-      }
-    } else {
+    // require authorization header
+    if (!req.headers.authorization) {
       res.status(400).json({
         message: "please provide your auth token in headers as 'authorization'"
       });
+      return;
     }
+
+    let decoded;
+    // verify token
+    try {
+      decoded = jwt.verify(req.headers.authorization, jwtKey);
+    } catch (error) {
+      res.status(400).json({ error });
+      return;
+    }
+
+    // get user from db
+    const user = await db("users")
+      .where({ id: decoded.user_id })
+      .first();
+
+    // respond appropriately if not found (should be found since required to get token in first place)
+    if (!user) {
+      res.status(404).json({ message: "user on token not found" });
+      return;
+    }
+
+    // attach user to req object without password field
+    delete user.password;
+    req.user = user;
+    next();
   } catch (error) {
-    res.status(400).json({ error });
+    next(error);
   }
 };
 
