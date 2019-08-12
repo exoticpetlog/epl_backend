@@ -83,8 +83,9 @@ function getToken(userID) {
     {
       user_id: userID
     },
-    jwtKey,
-    { expiresIn: "1h" }
+    jwtKey
+    // no expiration wanted ( for now atleast... )
+    // { expiresIn: "1h" }
   );
 }
 
@@ -102,6 +103,7 @@ const verifyToken = async (req, res, next) => {
     // verify token
     try {
       decoded = jwt.verify(req.headers.authorization, jwtKey);
+      console.log(decoded);
     } catch (error) {
       res.status(400).json({ error });
       return;
