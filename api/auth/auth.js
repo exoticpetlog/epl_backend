@@ -6,34 +6,72 @@ const jwtKey = process.env.JWT_SECRET;
 const authRouter = express.Router();
 
 authRouter.post("/register", async (req, res, next) => {
-  const ids = await db("users").insert({
-    username: req.body.username,
-    password: bcrypt.hashSync(req.body.password, 8),
-    email: req.body.email
-  });
+  try {
+    // check for proper registration info
+    if (
+      !req.body.username ||
+      !req.body.email ||
+      !req.body.password1 ||
+      !req.body.password2
+    ) {
+      res
+        .status(400)
+        .json({ message: "please provide username, passwords, and email" });
+      return;
+    }
+    // check passwords match
+    if (req.body.password1 !== req.body.password2) {
+      res.status(400).json({ message: "passwords do not match" });
+      return;
+    }
 
-  res.status(201).json({
-    message: `Welcome, ${req.body.username}!`,
-    token: getToken(ids[0])
-  });
+    // insert new user to database
+    const ids = await db("users").insert({
+      username: req.body.username,
+      password: bcrypt.hashSync(req.body.password1, 8),
+      email: req.body.email
+    });
+
+    // respond with token
+    res.status(201).json({
+      message: `Welcome, ${req.body.username}!`,
+      token: getToken(ids[0])
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 authRouter.post("/login", async (req, res, next) => {
   try {
+    // check body for required login info
+    if (!req.body.username || !req.body.password) {
+      res
+        .status(400)
+        .json({ message: "please provide both username and password" });
+      return;
+    }
+
+    // retrieve user info from database
     const user = await db("users")
       .where({ username: req.body.username })
       .first();
-    if (user) {
-      if (bcrypt.compareSync(req.body.password, user.password)) {
-        res.status(200).json({
-          message: `Welcome Back, ${req.body.username}`,
-          token: getToken(user.id)
-        });
-      } else {
-        res.status(400).json({ message: "access denied" });
-      }
-    } else {
+
+    // respond accordingly if none found
+    if (!user) {
       res.status(404).json({ message: "user not found" });
+      return;
+    }
+
+    // check password and respond with token
+    if (bcrypt.compareSync(req.body.password, user.password)) {
+      res.status(200).json({
+        message: `Welcome Back, ${req.body.username}`,
+        token: getToken(user.id)
+      });
+    } else {
+      // pw did not match
+      res.status(400).json({ message: "access denied" });
     }
   } catch (err) {
     next(err);
@@ -45,26 +83,49 @@ function getToken(userID) {
     {
       user_id: userID
     },
-    jwtKey,
-    { expiresIn: "1h" }
+    jwtKey
+    // no expiration wanted ( for now atleast... )
+    // { expiresIn: "1h" }
   );
 }
 
 const verifyToken = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(req.headers.authorization, jwtKey);
+    // require authorization header
+    if (!req.headers.authorization) {
+      res.status(400).json({
+        message: "please provide your auth token in headers as 'authorization'"
+      });
+      return;
+    }
+
+    let decoded;
+    // verify token
+    try {
+      decoded = jwt.verify(req.headers.authorization, jwtKey);
+      console.log(decoded);
+    } catch (error) {
+      res.status(400).json({ error });
+      return;
+    }
+
+    // get user from db
     const user = await db("users")
       .where({ id: decoded.user_id })
       .first();
-    if (user) {
-      delete user.password;
-      req.user = user;
-      next();
-    } else {
-      res.status(404).json({ message: "user not found" });
+
+    // respond appropriately if not found (should be found since required to get token in first place)
+    if (!user) {
+      res.status(404).json({ message: "user on token not found" });
+      return;
     }
+
+    // attach user to req object without password field
+    delete user.password;
+    req.user = user;
+    next();
   } catch (error) {
-    res.status(400).json({ error });
+    next(error);
   }
 };
 
