@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const authRouter = require("./auth/auth.js");
+const authRouter = require("./auth/authRouter.js");
 const { verifyToken } = require("./auth/tokens/tokenHelpers.js");
 
 const server = express();
