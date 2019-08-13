@@ -4,7 +4,7 @@ const db = require("../../config/dbConfig.js");
 const jwt = require("jsonwebtoken");
 const jwtKey = process.env.JWT_SECRET;
 const authRouter = express.Router();
-const { sendErrorResponse } = require("./errorResponses.js");
+const send400Response = require("./send400response.js");
 
 authRouter.post("/register", async (req, res, next) => {
   try {
@@ -15,15 +15,12 @@ authRouter.post("/register", async (req, res, next) => {
       !req.body.password1 ||
       !req.body.password2
     ) {
-      sendErrorResponse(res, "missing");
-      // res
-      //   .status(400)
-      //   .json({ message: "please provide username, passwords, and email" });
+      send400Response(res, "reg_missing");
       return;
     }
     // check passwords match
     if (req.body.password1 !== req.body.password2) {
-      sendErrorResponse(res, "password");
+      send400Response(res, "reg_pw");
       return;
     }
 
@@ -48,9 +45,7 @@ authRouter.post("/login", async (req, res, next) => {
   try {
     // check body for required login info
     if (!req.body.username || !req.body.password) {
-      res
-        .status(400)
-        .json({ message: "please provide both username and password" });
+      send400Response(res, "login_missing");
       return;
     }
 
@@ -60,20 +55,20 @@ authRouter.post("/login", async (req, res, next) => {
       .first();
 
     // respond accordingly if none found
-    if (!user) {
-      res.status(404).json({ message: "user not found" });
-      return;
-    }
+    // if (!user) {
+    //   res.status(404).json({ message: "user not found" });
+    //   return;
+    // }
 
     // check password and respond with token
-    if (bcrypt.compareSync(req.body.password, user.password)) {
+    if (user && bcrypt.compareSync(req.body.password, user.password)) {
       res.status(200).json({
         message: `Welcome Back, ${req.body.username}`,
         token: getToken(user.id)
       });
     } else {
-      // pw did not match
-      res.status(400).json({ message: "access denied" });
+      // pw did not match or username DNE
+      send400Response(res, "login_invalid");
     }
   } catch (err) {
     next(err);
