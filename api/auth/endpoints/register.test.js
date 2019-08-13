@@ -1,26 +1,5 @@
 const register = require("./register.js");
-
-class Req {
-  constructor(body) {
-    this.body = body;
-  }
-}
-
-class Res {
-  constructor() {
-    this.statusCode = 0;
-    this.jsonSent = "";
-  }
-  status(statusCode) {
-    this.statusCode = statusCode;
-    return this;
-  }
-  json(data) {
-    this.jsonSent = data;
-  }
-}
-
-const next = () => {};
+const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 
 describe("register endpoint", () => {
   describe("responds 400 + message if missing info", () => {
