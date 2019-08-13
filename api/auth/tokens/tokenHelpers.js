@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const jwtKey = process.env.JWT_SECRET;
+const db = require("../../../config/dbConfig.js");
 
 function getToken(userID) {
   return jwt.sign(
