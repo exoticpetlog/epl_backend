@@ -4,6 +4,7 @@ const db = require("../../config/dbConfig.js");
 const jwt = require("jsonwebtoken");
 const jwtKey = process.env.JWT_SECRET;
 const authRouter = express.Router();
+const { sendErrorResponse } = require("./errorResponses.js");
 
 authRouter.post("/register", async (req, res, next) => {
   try {
@@ -14,14 +15,15 @@ authRouter.post("/register", async (req, res, next) => {
       !req.body.password1 ||
       !req.body.password2
     ) {
-      res
-        .status(400)
-        .json({ message: "please provide username, passwords, and email" });
+      sendErrorResponse(res, "missing");
+      // res
+      //   .status(400)
+      //   .json({ message: "please provide username, passwords, and email" });
       return;
     }
     // check passwords match
     if (req.body.password1 !== req.body.password2) {
-      res.status(400).json({ message: "passwords do not match" });
+      sendErrorResponse(res, "password");
       return;
     }
 

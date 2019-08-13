@@ -2,6 +2,7 @@ require("dotenv").config();
 const request = require("supertest");
 const db = require("../../config/dbConfig.js");
 const server = require("../server.js");
+const { errorResponses } = require("./errorResponses.js");
 
 beforeAll(async () => {
   await db("users").truncate();
@@ -27,10 +28,8 @@ describe("auth Routes", () => {
             email
           })
           .then(res => {
-            expect(res.status).toBe(400);
-            expect(res.body.message).toBe(
-              "please provide username, passwords, and email"
-            );
+            expect(res.status).toBe(errorResponses["missing"]["status"]);
+            expect(res.body).toEqual(errorResponses["missing"]["body"]);
           });
       });
       test("if missing password1", () => {
@@ -42,7 +41,8 @@ describe("auth Routes", () => {
             email
           })
           .then(res => {
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(errorResponses["missing"]["status"]);
+            expect(res.body).toEqual(errorResponses["missing"]["body"]);
           });
       });
       test("if missing password2", () => {
@@ -54,7 +54,8 @@ describe("auth Routes", () => {
             email
           })
           .then(res => {
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(errorResponses["missing"]["status"]);
+            expect(res.body).toEqual(errorResponses["missing"]["body"]);
           });
       });
       test("if missing email", () => {
@@ -66,7 +67,8 @@ describe("auth Routes", () => {
             password2
           })
           .then(res => {
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(errorResponses["missing"]["status"]);
+            expect(res.body).toEqual(errorResponses["missing"]["body"]);
           });
       });
     });
