@@ -21,6 +21,15 @@ async function register(req, res, next) {
       return;
     }
 
+    // check user doesnt already exist
+    const user = await db("users")
+      .where({ username: req.body.username })
+      .first();
+    if (user) {
+      send400Response(res, "reg_user");
+      return;
+    }
+
     // insert new user to database
     const ids = await db("users").insert({
       username: req.body.username,
