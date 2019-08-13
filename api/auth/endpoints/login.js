@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const db = require("../../../config/dbConfig.js");
 const send400Response = require("./responses/send400response.js");
 const { getToken } = require("../tokens/tokenHelpers.js");
@@ -11,15 +12,16 @@ async function login(req, res, next) {
     }
 
     // retrieve user info from database
-    const user = await db("users")
+    let user = await db("users")
       .where({ username: req.body.username })
       .first();
 
-    // respond accordingly if none found
-    // if (!user) {
-    //   res.status(404).json({ message: "user not found" });
-    //   return;
-    // }
+    // if not found by username, try email
+    if (!user) {
+      user = await db("users")
+        .where({ email: req.body.username })
+        .first();
+    }
 
     // check password and respond with token
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
@@ -28,8 +30,9 @@ async function login(req, res, next) {
         token: getToken(user.id)
       });
     } else {
-      // pw did not match or username DNE
+      // pw did not match or username/email DNE
       send400Response(res, "login_invalid");
+      return;
     }
   } catch (err) {
     next(err);

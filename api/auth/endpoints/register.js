@@ -21,12 +21,21 @@ async function register(req, res, next) {
       return;
     }
 
-    // check user doesnt already exist
+    // check username doesnt already exist
     const user = await db("users")
       .where({ username: req.body.username })
       .first();
     if (user) {
       send400Response(res, "reg_user");
+      return;
+    }
+
+    // check email doesnt already exist
+    const email = await db("users")
+      .where({ email: req.body.email })
+      .first();
+    if (email) {
+      send400Response(res, "reg_email");
       return;
     }
 
