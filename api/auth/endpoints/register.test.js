@@ -2,13 +2,9 @@ const register = require("./register.js");
 const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 const db = require("../../../config/dbConfig.js");
 
-beforeAll(async () => {
-  await db("users").truncate();
-});
-
-// afterEach(async () => {
-//   await db("users").truncate();
-// });
+beforeAll(() => {
+  return db("users").truncate();
+}, 200);
 
 describe("Auth Routes", () => {
   describe("Register Endpoint", () => {
