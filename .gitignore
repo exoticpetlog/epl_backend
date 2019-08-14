@@ -59,3 +59,7 @@ typings/
 
 # next.js build output
 .next
+
+# dev and test DBs
+data/dev.db3
+data/test.db3
