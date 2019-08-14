@@ -61,5 +61,5 @@ typings/
 .next
 
 # dev and test DBs
-data/dev.db3
-data/test.db3
+./data/dev.db3
+./data/test.db3
