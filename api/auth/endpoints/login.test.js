@@ -3,6 +3,10 @@ const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 const db = require("../../../config/dbConfig.js");
 const bcrypt = require("bcryptjs");
 
+beforeAll(() => {
+  return db("users").truncate();
+}, 200);
+
 describe("Auth Routes", () => {
   describe("Login Endpoint", () => {
     const username = "test2";
@@ -14,11 +18,7 @@ describe("Auth Routes", () => {
         password: bcrypt.hashSync(password, 8),
         email
       });
-    }, 1000);
-
-    afterAll(() => {
-      return db("users").truncate();
-    }, 1000);
+    }, 200);
 
     describe("successful login info should:", () => {
       test("respond with 200 and token", async () => {
@@ -36,6 +36,10 @@ describe("Auth Routes", () => {
           console.log("----whhaaaaaaaaaat?----");
           console.log(res.jsonSent);
           console.log(req);
+          let user = await db("users")
+            .where({ username })
+            .first();
+          console.log(user);
         }
         expect(res.statusCode).toBe(200);
         expect(res.jsonSent.token).toBeTruthy();
