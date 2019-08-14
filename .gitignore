@@ -61,4 +61,4 @@ typings/
 .next
 
 # dev and test DBs
-*.db3
+/data/*.db3
