@@ -1,7 +1,8 @@
 module.exports = {
   Req: class Req {
-    constructor(body) {
+    constructor(body = {}, headers = {}) {
       this.body = body;
+      this.headers = headers;
     }
   },
   Res: class Res {

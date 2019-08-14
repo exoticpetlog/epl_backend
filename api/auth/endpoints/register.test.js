@@ -4,10 +4,17 @@ const db = require("../../../config/dbConfig.js");
 
 beforeAll(() => {
   return db("users").truncate();
-}, 200);
+});
 
 describe("Auth Routes", () => {
   describe("Register Endpoint", () => {
+    beforeAll(() => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+        }, 200);
+      });
+    });
     const username = "test1";
     const password1 = "pass1";
     const password2 = "pass2";

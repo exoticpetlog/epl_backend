@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 
 beforeAll(() => {
   return db("users").truncate();
-}, 200);
+});
 
 describe("Auth Routes", () => {
   describe("Login Endpoint", () => {
