@@ -28,7 +28,9 @@ const verifyToken = async (req, res, next) => {
     try {
       decoded = jwt.verify(req.headers.authorization, jwtKey);
     } catch (error) {
-      res.status(400).json({ error });
+      res
+        .status(400)
+        .json({ error, message: "token invalid. login for new token" });
       return;
     }
 

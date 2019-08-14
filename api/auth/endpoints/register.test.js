@@ -4,10 +4,22 @@ const db = require("../../../config/dbConfig.js");
 
 beforeAll(() => {
   return db("users").truncate();
-}, 200);
+});
 
 describe("Auth Routes", () => {
   describe("Register Endpoint", () => {
+    beforeAll(() => {
+      // there seems to be some 1/20 issue of
+      // truncating in the main beforeAll
+      // to finish truncating after tests start running
+      // causing a failure 1/20 times
+      // so here i add a promise timeout to explicitly set a delay
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+        }, 200);
+      });
+    });
     const username = "test1";
     const password1 = "pass1";
     const password2 = "pass2";
