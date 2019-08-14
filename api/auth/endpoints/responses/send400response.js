@@ -8,6 +8,7 @@ const messages = {
 };
 
 function send400Response(res, key) {
+  // console.log(messages[key]);
   return res.status(400).json({ message: messages[key] });
 }
 
