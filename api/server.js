@@ -15,7 +15,7 @@ server.use(verifyToken);
 server.use(
   "/graphql",
   expressGraphQL({
-    schema,
+    schema: schema,
     graphiql: true
   })
 );
