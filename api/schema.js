@@ -22,15 +22,14 @@ const rootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
     orgs: {
-      type: orgsType,
+      type: new GraphQLList(orgsType),
       //   args: {
       //     id: { type: GraphQLInt },
       //     name: { type: GraphQLString },
       //   }
       resolve: async (parentValue, args, req) => {
-        let orgs = await db("orgs")
-          .where({ id: req.user.id })
-          .first();
+        let orgs = await db("orgs").where({ owner_id: req.user.id });
+
         return orgs;
       }
     }
