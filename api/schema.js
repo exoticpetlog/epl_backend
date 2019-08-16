@@ -28,7 +28,9 @@ const rootQuery = new GraphQLObjectType({
       //     name: { type: GraphQLString },
       //   }
       resolve: async (parentValue, args, req) => {
-        let orgs = await db("orgs").where({ owner_id: req.user.id });
+        let orgs = await db("users_orgs")
+          .where({ user_id: req.user.id })
+          .join("orgs", "orgs.id", "=", "users_orgs.org_id");
 
         return orgs;
       }
@@ -46,11 +48,18 @@ const mutation = new GraphQLObjectType({
         // owner_id: { type: new GraphQLNonNull(GraphQLInt)}
       },
       resolve: async (parentValue, args, req) => {
+        // TODO - utilize .returning() after switching to postgreSQL
+        // res from db will change from array of ids to a count of inserted objects
         const ids = await db("orgs").insert({
           name: args.name,
           owner_id: req.user.id
         });
-        // TODO - utilize returning after switching to postgres
+        // add connection in users_orgs for many to many rel
+        await db("users_orgs").insert({
+          user_id: req.user.id,
+          org_id: ids[0]
+        });
+
         const org = await db("orgs")
           .where({ id: ids[0] })
           .first();
