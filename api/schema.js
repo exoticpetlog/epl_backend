@@ -4,7 +4,8 @@ const {
   GraphQLInt,
   GraphQLSchema,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
+  GraphQLError
 } = require("graphql");
 const db = require("../config/dbConfig.js");
 
@@ -54,6 +55,46 @@ const mutation = new GraphQLObjectType({
           .where({ id: ids[0] })
           .first();
         return org;
+      }
+    },
+    updateOrg: {
+      type: orgsType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+        name: { type: GraphQLString },
+        owner_id: { type: GraphQLInt }
+      },
+      resolve: async (parentValue, args, req) => {
+        // check org belongs to user
+        const org = await db("orgs")
+          .where({ id: args.id })
+          .first();
+        if (!org) {
+          throw new GraphQLError(`org of id: ${args.id} does not exist`);
+        }
+        if (req.user.id !== org.owner_id) {
+          throw new GraphQLError("your are not the owner of this org");
+        }
+
+        // if owner_id is in args, check there is user with that id
+        if (args.owner_id) {
+          const new_owner = await db("users")
+            .where({ id: args.owner_id })
+            .first();
+          if (!new_owner) {
+            throw new GraphQLError(
+              `now user of id: ${args.owner_id} exists to take take ownership`
+            );
+          }
+        }
+        // update the club info
+        await db("orgs")
+          .where({ id: args.id })
+          .update(args);
+        const updatedOrg = await db("orgs")
+          .where({ id: args.id })
+          .first();
+        return updatedOrg;
       }
     }
   }
