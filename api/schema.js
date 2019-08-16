@@ -22,15 +22,16 @@ const rootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
     orgs: {
-      type: orgsType,
+      type: new GraphQLList(orgsType),
       //   args: {
       //     id: { type: GraphQLInt },
       //     name: { type: GraphQLString },
       //   }
       resolve: async (parentValue, args, req) => {
-        let orgs = await db("orgs")
-          .where({ id: req.user.id })
-          .first();
+        let orgs = await db("users_orgs")
+          .where({ user_id: req.user.id })
+          .join("orgs", "orgs.id", "=", "users_orgs.org_id");
+
         return orgs;
       }
     }
@@ -47,10 +48,18 @@ const mutation = new GraphQLObjectType({
         // owner_id: { type: new GraphQLNonNull(GraphQLInt)}
       },
       resolve: async (parentValue, args, req) => {
+        // TODO - utilize .returning() after switching to postgreSQL
+        // res from db will change from array of ids to a count of inserted objects
         const ids = await db("orgs").insert({
           name: args.name,
           owner_id: req.user.id
         });
+        // add connection in users_orgs for many to many rel
+        await db("users_orgs").insert({
+          user_id: req.user.id,
+          org_id: ids[0]
+        });
+
         const org = await db("orgs")
           .where({ id: ids[0] })
           .first();
@@ -88,9 +97,11 @@ const mutation = new GraphQLObjectType({
           }
         }
         // update the club info
-        await db("orgs")
+        const updated = await db("orgs")
           .where({ id: args.id })
           .update(args);
+        // TODO - utilize returning after switching to postgres
+        // .returning("*");
         const updatedOrg = await db("orgs")
           .where({ id: args.id })
           .first();
