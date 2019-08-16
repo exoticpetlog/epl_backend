@@ -51,6 +51,7 @@ const mutation = new GraphQLObjectType({
           name: args.name,
           owner_id: req.user.id
         });
+        // TODO - utilize returning after switching to postgres
         const org = await db("orgs")
           .where({ id: ids[0] })
           .first();
@@ -88,9 +89,11 @@ const mutation = new GraphQLObjectType({
           }
         }
         // update the club info
-        await db("orgs")
+        const updated = await db("orgs")
           .where({ id: args.id })
           .update(args);
+        // TODO - utilize returning after switching to postgres
+        // .returning("*");
         const updatedOrg = await db("orgs")
           .where({ id: args.id })
           .first();
