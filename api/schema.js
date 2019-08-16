@@ -83,7 +83,7 @@ const mutation = new GraphQLObjectType({
             .first();
           if (!new_owner) {
             throw new GraphQLError(
-              `now user of id: ${args.owner_id} exists to take take ownership`
+              `no user of id: ${args.owner_id} exists to take take ownership`
             );
           }
         }
