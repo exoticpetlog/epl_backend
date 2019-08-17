@@ -53,7 +53,6 @@ describe("Token Vaidation", () => {
             email: "myEmail@email.emails"
           })
           .returning("id");
-        console.log(`********------ ${id}`);
         const token = getToken(id);
         const res = new Res();
         const req = new Req(
@@ -73,7 +72,6 @@ describe("Token Vaidation", () => {
             email: "myEmail2@email2.emails"
           })
           .returning("id");
-        console.log(`*****_______`);
         const token = getToken(id);
         const res = new Res();
         const req = new Req(
@@ -83,7 +81,6 @@ describe("Token Vaidation", () => {
           }
         );
         await verifyToken(req, res, next);
-        console.log(`*****_______ ${res.statusCode}`);
         expect(req.user.password).toBeUndefined();
         expect(req.user).not.toBeUndefined();
       });
