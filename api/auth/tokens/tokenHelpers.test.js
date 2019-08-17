@@ -2,8 +2,8 @@ const { verifyToken, getToken } = require("./tokenHelpers.js");
 const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 const db = require("../../../config/dbConfig.js");
 
-beforeAll(() => {
-  return db("users").truncate();
+beforeAll(async () => {
+  return db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
 });
 
 describe("Token Vaidation", () => {
@@ -17,7 +17,7 @@ describe("Token Vaidation", () => {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve();
-        }, 200);
+        }, 1000);
       });
     });
     describe("responds 400 + message if:", () => {
@@ -46,12 +46,15 @@ describe("Token Vaidation", () => {
     describe("valid token should:", () => {
       test("put user object from db on req body", async () => {
         const username = "daBestUser";
-        const ids = await db("users").insert({
-          username,
-          password: "passPass",
-          email: "myEmail@email.emails"
-        });
-        const token = getToken(ids[0]);
+        const id = await db("users")
+          .insert({
+            username,
+            password: "passPass",
+            email: "myEmail@email.emails"
+          })
+          .returning("id");
+        console.log(`********------ ${id}`);
+        const token = getToken(id);
         const res = new Res();
         const req = new Req(
           {},
@@ -63,12 +66,15 @@ describe("Token Vaidation", () => {
         expect(req.user.username).toEqual(username);
       });
       test("not attach user password with user object", async () => {
-        const ids = await db("users").insert({
-          username: "daBestUser2",
-          password: "passPass2",
-          email: "myEmail2@email2.emails"
-        });
-        const token = getToken(ids[0]);
+        const id = await db("users")
+          .insert({
+            username: "daBestUser2",
+            password: "passPass2",
+            email: "myEmail2@email2.emails"
+          })
+          .returning("id");
+        console.log(`*****_______`);
+        const token = getToken(id);
         const res = new Res();
         const req = new Req(
           {},
@@ -77,6 +83,7 @@ describe("Token Vaidation", () => {
           }
         );
         await verifyToken(req, res, next);
+        console.log(`*****_______ ${res.statusCode}`);
         expect(req.user.password).toBeUndefined();
         expect(req.user).not.toBeUndefined();
       });

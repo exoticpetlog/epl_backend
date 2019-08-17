@@ -3,8 +3,8 @@ const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 const db = require("../../../config/dbConfig.js");
 const bcrypt = require("bcryptjs");
 
-beforeAll(() => {
-  return db("users").truncate();
+beforeAll(async () => {
+  return db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
 });
 
 describe("Auth Routes", () => {
