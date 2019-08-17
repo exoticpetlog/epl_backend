@@ -7,21 +7,21 @@ beforeAll(async () => {
 });
 
 describe("Token Vaidation", () => {
+  const username = "daBestUser";
+  let token;
+
+  beforeAll(async () => {
+    const id = await db("users")
+      .insert({
+        username,
+        password: "passPass",
+        email: "myEmail@email.emails"
+      })
+      .returning("id");
+    token = getToken(id);
+  });
+
   describe("verifyToken middleware fn", () => {
-    const username = "daBestUser";
-    let token;
-
-    beforeAll(async () => {
-      const id = await db("users")
-        .insert({
-          username,
-          password: "passPass",
-          email: "myEmail@email.emails"
-        })
-        .returning("id");
-      token = getToken(id);
-    });
-
     describe("responds 400 + message if:", () => {
       test("no authorization header", async () => {
         const res = new Res();
