@@ -19,6 +19,8 @@ module.exports = {
     }
   },
   next: (error = null) => {
-    console.log(error);
+    if (error) {
+      console.log(error);
+    }
   }
 };
