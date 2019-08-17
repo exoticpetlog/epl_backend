@@ -40,17 +40,18 @@ async function register(req, res, next) {
     }
 
     // insert new user to database
-    // TODO - utilize returning after switching to postgres, the response will default to a count instead of IDs (iirc)
-    const ids = await db("users").insert({
-      username: req.body.username,
-      password: bcrypt.hashSync(req.body.password1, 8),
-      email: req.body.email
-    });
+    const id = await db("users")
+      .insert({
+        username: req.body.username,
+        password: bcrypt.hashSync(req.body.password1, 8),
+        email: req.body.email
+      })
+      .returning("id");
 
     // respond with token
     res.status(201).json({
       message: `Welcome, ${req.body.username}!`,
-      token: getToken(ids[0])
+      token: getToken(id)
     });
   } catch (err) {
     next(err);
