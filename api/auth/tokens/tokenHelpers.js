@@ -33,12 +33,10 @@ const verifyToken = async (req, res, next) => {
         .json({ error, message: "token invalid. login for new token" });
       return;
     }
-
     // get user from db
     const user = await db("users")
-      .where({ id: decoded.user_id })
+      .where({ id: Number(decoded.user_id) })
       .first();
-
     // respond appropriately if not found (should be found since required to get token in first place)
     if (!user) {
       res.status(404).json({ message: "user on token not found" });

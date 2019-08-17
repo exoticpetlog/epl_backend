@@ -18,5 +18,9 @@ module.exports = {
       this.jsonSent = data;
     }
   },
-  next: function() {}
+  next: (error = null) => {
+    if (error) {
+      console.log(error);
+    }
+  }
 };

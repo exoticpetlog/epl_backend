@@ -23,15 +23,10 @@ const rootQuery = new GraphQLObjectType({
   fields: {
     orgs: {
       type: new GraphQLList(orgsType),
-      //   args: {
-      //     id: { type: GraphQLInt },
-      //     name: { type: GraphQLString },
-      //   }
       resolve: async (parentValue, args, req) => {
-        let orgs = await db("users_orgs")
+        const orgs = await db("users_orgs")
           .where({ user_id: req.user.id })
           .join("orgs", "orgs.id", "=", "users_orgs.org_id");
-
         return orgs;
       }
     }
@@ -45,25 +40,22 @@ const mutation = new GraphQLObjectType({
       type: orgsType,
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) }
-        // owner_id: { type: new GraphQLNonNull(GraphQLInt)}
       },
       resolve: async (parentValue, args, req) => {
-        // TODO - utilize .returning() after switching to postgreSQL
-        // res from db will change from array of ids to a count of inserted objects
-        const ids = await db("orgs").insert({
-          name: args.name,
-          owner_id: req.user.id
-        });
+        const [newOrg] = await db("orgs")
+          .insert({
+            name: args.name,
+            owner_id: req.user.id
+          })
+          .returning("*");
+
         // add connection in users_orgs for many to many rel
         await db("users_orgs").insert({
           user_id: req.user.id,
-          org_id: ids[0]
+          org_id: Number(newOrg.id)
         });
 
-        const org = await db("orgs")
-          .where({ id: ids[0] })
-          .first();
-        return org;
+        return newOrg;
       }
     },
     updateOrg: {
@@ -97,15 +89,12 @@ const mutation = new GraphQLObjectType({
           }
         }
         // update the club info
-        const updated = await db("orgs")
+        const [updated] = await db("orgs")
           .where({ id: args.id })
-          .update(args);
-        // TODO - utilize returning after switching to postgres
-        // .returning("*");
-        const updatedOrg = await db("orgs")
-          .where({ id: args.id })
-          .first();
-        return updatedOrg;
+          .update(args)
+          .returning("*");
+
+        return updated;
       }
     }
   }

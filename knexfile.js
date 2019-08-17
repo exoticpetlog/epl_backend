@@ -1,12 +1,42 @@
 // Update with your config settings.
 
 module.exports = {
+  // development: {
+  //   client: "sqlite3",
+  //   connection: {
+  //     filename: "./data/dev.db3"
+  //   },
+  //   useNullAsDefault: true,
+  //   migrations: {
+  //     directory: "./data/migrations"
+  //   },
+  //   seeds: {
+  //     directory: "./data/seeds"
+  //   }
+  // },
+
+  // testing: {
+  //   client: "sqlite3",
+  //   connection: {
+  //     filename: "./data/test.db3"
+  //   },
+  //   useNullAsDefault: true,
+  //   migrations: {
+  //     directory: "./data/migrations"
+  //   },
+  //   seeds: {
+  //     directory: "./data/seeds"
+  //   }
+  // },
+
   development: {
-    client: "sqlite3",
+    client: "pg",
     connection: {
-      filename: "./data/dev.db3"
+      host: "127.0.0.1",
+      user: "postgres",
+      password: "pass",
+      database: "epl_dev"
     },
-    useNullAsDefault: true,
     migrations: {
       directory: "./data/migrations"
     },
@@ -16,11 +46,13 @@ module.exports = {
   },
 
   testing: {
-    client: "sqlite3",
+    client: "pg",
     connection: {
-      filename: "./data/test.db3"
+      host: "127.0.0.1",
+      user: "postgres",
+      password: "pass",
+      database: "epl_test"
     },
-    useNullAsDefault: true,
     migrations: {
       directory: "./data/migrations"
     },
