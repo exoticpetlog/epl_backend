@@ -4,11 +4,6 @@ const pause = require("../../testHelpers/pauseTest.js");
 const db = require("../../../config/dbConfig.js");
 const bcrypt = require("bcryptjs");
 
-beforeAll(async () => {
-  await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
-  return pause();
-});
-
 describe("Auth Routes", () => {
   describe("Login Endpoint", () => {
     const username = "test2";
@@ -16,6 +11,7 @@ describe("Auth Routes", () => {
     const email = "email2@things.stuff";
 
     beforeAll(async () => {
+      await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
       await pause();
       await db("users").insert({
         username,

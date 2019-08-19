@@ -3,32 +3,31 @@ const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 const pause = require("../../testHelpers/pauseTest.js");
 const db = require("../../../config/dbConfig.js");
 
-beforeAll(async () => {
-  await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
-  return pause();
-});
-
 describe("Token Vaidation", () => {
-  const username = "daBestUser";
-  let token;
-
   beforeAll(async () => {
-    await pause();
-
-    const [id] = await db("users")
-      .insert({
-        username,
-        password: "passPass",
-        email: "myEmail@email.emails"
-      })
-      .returning("id");
-
-    token = getToken(id);
-
+    await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
     return pause();
   });
 
   describe("verifyToken middleware fn", () => {
+    const username = "daBestUser";
+    let token;
+
+    beforeAll(async () => {
+      await pause();
+
+      const [id] = await db("users")
+        .insert({
+          username,
+          password: "passPass",
+          email: "myEmail@email.emails"
+        })
+        .returning("id");
+
+      token = getToken(id);
+
+      return pause();
+    });
     describe("responds 400 + message if:", () => {
       test("no authorization header", async () => {
         const res = new Res();

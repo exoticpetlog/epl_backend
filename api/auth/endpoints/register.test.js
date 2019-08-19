@@ -3,11 +3,6 @@ const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 const pause = require("../../testHelpers/pauseTest.js");
 const db = require("../../../config/dbConfig.js");
 
-beforeAll(async () => {
-  await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
-  return pause();
-});
-
 describe("Auth Routes", () => {
   describe("Register Endpoint", () => {
     const username = "test1";
@@ -15,9 +10,8 @@ describe("Auth Routes", () => {
     const password2 = "pass2";
     const email = "email";
 
-    beforeAll(() => {
-      // test suite would sometimes start before db truncate completed
-      // that required an explicit timeout to avoid, since this beforeAll has no db promises i added a pause
+    beforeAll(async () => {
+      await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
       return pause();
     });
 
