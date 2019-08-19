@@ -2,26 +2,30 @@ const { verifyToken, getToken } = require("./tokenHelpers.js");
 const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 const db = require("../../../config/dbConfig.js");
 
-beforeAll(async () => {
-  return db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
-});
-
 describe("Token Vaidation", () => {
-  const username = "daBestUser";
-  let token;
-
   beforeAll(async () => {
-    const id = await db("users")
-      .insert({
-        username,
-        password: "passPass",
-        email: "myEmail@email.emails"
-      })
-      .returning("id");
-    token = getToken(id);
+    await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
   });
 
   describe("verifyToken middleware fn", () => {
+    const username = "daBestUser";
+    let token;
+
+    beforeAll(async () => {
+      const [id] = await db("users")
+        .insert({
+          username,
+          password: "passPass",
+          email: "myEmail@email.emails"
+        })
+        .returning("id");
+      token = getToken(id);
+    });
+
+    afterAll(() => {
+      db.destroy();
+    });
+
     describe("responds 400 + message if:", () => {
       test("no authorization header", async () => {
         const res = new Res();

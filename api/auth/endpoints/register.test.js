@@ -2,10 +2,6 @@ const register = require("./register.js");
 const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 const db = require("../../../config/dbConfig.js");
 
-beforeAll(async () => {
-  return db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
-});
-
 describe("Auth Routes", () => {
   describe("Register Endpoint", () => {
     const username = "test1";
@@ -13,16 +9,12 @@ describe("Auth Routes", () => {
     const password2 = "pass2";
     const email = "email";
 
-    beforeAll(() => {
-      // had issues while using sqlite3 - test suite would sometimes start before db truncate completed
-      // that required an explicit timeout to avoid, since this beforeAll has no db promises i added a pause
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve();
-        }, 200);
-      });
+    beforeAll(async () => {
+      await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
     });
-
+    afterAll(() => {
+      db.destroy();
+    });
     describe("good info creates user", () => {
       test("responds with 201 + token", async () => {
         const res = new Res();
