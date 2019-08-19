@@ -94,6 +94,7 @@ describe("GraphQL", () => {
             }
             expect(error).toBeTruthy();
           });
+
           test("transfering ownership to DNE user", async () => {
             let error;
             try {
@@ -104,6 +105,12 @@ describe("GraphQL", () => {
             }
             expect(error).toBeTruthy();
           });
+        });
+        test("should return updated org", async () => {
+          args1.name = "some new name";
+          delete args1.owner_id;
+          const updated = await updateOrg(null, args1, req1);
+          expect(updated.name).toEqual(args1.name);
         });
       });
     });
