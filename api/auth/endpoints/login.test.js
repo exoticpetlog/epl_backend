@@ -1,24 +1,24 @@
 const login = require("./login.js");
 const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
-const pause = require("../../testHelpers/pauseTest.js");
 const db = require("../../../config/dbConfig.js");
 const bcrypt = require("bcryptjs");
 
 describe("Auth Routes", () => {
+  beforeAll(async () => {
+    await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
+  });
+
   describe("Login Endpoint", () => {
     const username = "test2";
     const password = "pass2";
     const email = "email2@things.stuff";
 
     beforeAll(async () => {
-      await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
-      await pause();
       await db("users").insert({
         username,
         password: bcrypt.hashSync(password, 8),
         email
       });
-      return pause();
     });
     afterAll(() => {
       db.destroy();

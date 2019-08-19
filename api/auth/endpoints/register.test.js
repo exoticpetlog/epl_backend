@@ -1,6 +1,5 @@
 const register = require("./register.js");
 const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
-const pause = require("../../testHelpers/pauseTest.js");
 const db = require("../../../config/dbConfig.js");
 
 describe("Auth Routes", () => {
@@ -12,7 +11,6 @@ describe("Auth Routes", () => {
 
     beforeAll(async () => {
       await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
-      return pause();
     });
     afterAll(() => {
       db.destroy();

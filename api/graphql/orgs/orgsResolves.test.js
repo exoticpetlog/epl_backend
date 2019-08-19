@@ -1,4 +1,3 @@
-const pause = require("../../testHelpers/pauseTest.js");
 const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
 const db = require("../../../config/dbConfig.js");
 const { getOrgs, createOrg, updateOrg } = require("./orgsResolves");
@@ -8,7 +7,6 @@ describe("GraphQL", () => {
     await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE orgs RESTART IDENTITY CASCADE");
     await db.raw("TRUNCATE TABLE users_orgs RESTART IDENTITY CASCADE");
-    return pause();
   });
   describe("Resolve Functions", () => {
     afterAll(() => {
@@ -28,8 +26,6 @@ describe("GraphQL", () => {
             email: "email2@2.test"
           }
         ]);
-
-        return pause();
       });
       describe("createOrg", () => {
         const req = new Req();

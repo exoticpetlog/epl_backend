@@ -4,7 +4,7 @@
   "description": "exotic pet log backend",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env DB_ENV=testing JWT_SECRET=gooblegobble jest --watchAll --verbose",
+    "test": "cross-env DB_ENV=testing JWT_SECRET=gooblegobble jest --watch --verbose",
     "devStart": "nodemon index.js",
     "start": "node index.js"
   },
