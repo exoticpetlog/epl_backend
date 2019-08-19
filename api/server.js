@@ -3,7 +3,7 @@ const cors = require("cors");
 const authRouter = require("./auth/authRouter.js");
 const { verifyToken } = require("./auth/tokens/tokenHelpers.js");
 const expressGraphQL = require("express-graphql");
-const schema = require("./schema.js");
+const schema = require("./graphql/schema.js");
 
 const server = express();
 server.use(cors());
