@@ -19,7 +19,7 @@ describe("GraphQL", () => {
       const req2 = new Req();
       const args1 = { name: "My Test Org" };
       const args2 = { name: "Second Org" };
-      let org_id, user1, user2, res;
+      let org_id, user1, user2, res, orgsList;
 
       beforeAll(async () => {
         await db("users").insert([
@@ -73,13 +73,37 @@ describe("GraphQL", () => {
 
       describe("getOrgs", () => {
         test("should return list of orgs user is in", async () => {
-          const orgsList = await getOrgs(null, args1, req1);
+          orgsList = await getOrgs(null, args1, req1);
           expect(orgsList[0].name).toEqual(args1.name);
         });
 
         test("should not return orgs of other users", async () => {
-          const orgsList = await getOrgs(null, args1, req1);
           expect(orgsList[1]).toBeFalsy();
+        });
+      });
+
+      describe("updateOrg", () => {
+        describe("should throw error if:", () => {
+          test("user doesnt own org", async () => {
+            let error;
+            try {
+              args1.id = orgsList[0].id;
+              await updateOrg(null, args1, req2);
+            } catch (err) {
+              error = err;
+            }
+            expect(error).toBeTruthy();
+          });
+          test("transfering ownership to DNE user", async () => {
+            let error;
+            try {
+              args1.owner_id = 50;
+              await updateOrg(null, args1, req1);
+            } catch (err) {
+              error = err;
+            }
+            expect(error).toBeTruthy();
+          });
         });
       });
     });
