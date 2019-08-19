@@ -14,7 +14,9 @@ describe("Auth Routes", () => {
       await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
       return pause();
     });
-
+    afterAll(() => {
+      db.destroy();
+    });
     describe("good info creates user", () => {
       test("responds with 201 + token", async () => {
         const res = new Res();

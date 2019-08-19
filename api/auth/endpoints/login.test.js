@@ -20,6 +20,9 @@ describe("Auth Routes", () => {
       });
       return pause();
     });
+    afterAll(() => {
+      db.destroy();
+    });
 
     describe("successful login info should:", () => {
       test("respond with 200 and token", async () => {

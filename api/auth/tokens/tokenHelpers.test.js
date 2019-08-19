@@ -27,6 +27,9 @@ describe("Token Vaidation", () => {
 
       return pause();
     });
+    afterAll(() => {
+      db.destroy();
+    });
     describe("responds 400 + message if:", () => {
       test("no authorization header", async () => {
         const res = new Res();
