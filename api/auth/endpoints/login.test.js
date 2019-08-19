@@ -1,10 +1,12 @@
 const login = require("./login.js");
 const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
+const pause = require("../../testHelpers/pauseTest.js");
 const db = require("../../../config/dbConfig.js");
 const bcrypt = require("bcryptjs");
 
 beforeAll(async () => {
-  return db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
+  await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
+  return pause();
 });
 
 describe("Auth Routes", () => {
@@ -13,13 +15,15 @@ describe("Auth Routes", () => {
     const password = "pass2";
     const email = "email2@things.stuff";
 
-    beforeAll(() => {
-      return db("users").insert({
+    beforeAll(async () => {
+      await pause();
+      await db("users").insert({
         username,
         password: bcrypt.hashSync(password, 8),
         email
       });
-    }, 200);
+      return pause();
+    });
 
     describe("successful login info should:", () => {
       test("respond with 200 and token", async () => {

@@ -1,9 +1,11 @@
 const { verifyToken, getToken } = require("./tokenHelpers.js");
 const { Req, Res, next } = require("../../testHelpers/testReqResNext.js");
+const pause = require("../../testHelpers/pauseTest.js");
 const db = require("../../../config/dbConfig.js");
 
 beforeAll(async () => {
-  return db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
+  await db.raw("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
+  return pause();
 });
 
 describe("Token Vaidation", () => {
@@ -11,14 +13,19 @@ describe("Token Vaidation", () => {
   let token;
 
   beforeAll(async () => {
-    const id = await db("users")
+    await pause();
+
+    const [id] = await db("users")
       .insert({
         username,
         password: "passPass",
         email: "myEmail@email.emails"
       })
       .returning("id");
+
     token = getToken(id);
+
+    return pause();
   });
 
   describe("verifyToken middleware fn", () => {
