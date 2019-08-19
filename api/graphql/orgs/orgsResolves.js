@@ -1,4 +1,5 @@
 const db = require("../../../config/dbConfig.js");
+const { GraphQLError } = require("graphql");
 
 module.exports = {
   getOrgs: async (parentValue, args, req) => {
