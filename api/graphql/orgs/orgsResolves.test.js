@@ -34,24 +34,21 @@ describe("GraphQL", () => {
             email: "email2@2.test"
           }
         ]);
+
+        user1 = await db("users")
+          .where({ username: "orgsTest1" })
+          .first();
+        req1.user = user1;
+
+        user2 = await db("users")
+          .where({ username: "orgsTest2" })
+          .first();
+        req2.user = user2;
       });
 
       describe("createOrg", () => {
         test("should put club on db", async () => {
-          // get IDs for the users
-          user1 = await db("users")
-            .where({ username: "orgsTest1" })
-            .first();
-          req1.user = user1;
-
-          user2 = await db("users")
-            .where({ username: "orgsTest2" })
-            .first();
-          req2.user = user2;
-          // insert their orgs
           res = await createOrg(null, args1, req1);
-          await createOrg(null, args2, req2);
-
           const org = await db("orgs")
             .where({ name: args1.name })
             .first();
@@ -78,6 +75,7 @@ describe("GraphQL", () => {
         });
 
         test("should not return orgs of other users", async () => {
+          await createOrg(null, args2, req2);
           expect(orgsList[1]).toBeFalsy();
         });
       });
