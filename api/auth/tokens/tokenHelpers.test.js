@@ -15,7 +15,6 @@ describe("Token Vaidation", () => {
 
     beforeAll(async () => {
       await pause();
-
       const [id] = await db("users")
         .insert({
           username,
