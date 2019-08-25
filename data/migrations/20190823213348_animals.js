@@ -8,6 +8,7 @@ exports.up = function(knex) {
     table.string("name").notNullable();
     table.string("description");
     table.text("notes");
+    table.timestamps(true, true);
   });
 };
 
