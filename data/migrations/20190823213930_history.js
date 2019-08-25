@@ -6,7 +6,7 @@ exports.up = function(knex) {
     table.integer("action_id").unsigned();
     table.foreign("action_id").references("actions.id");
     table.boolean("success").defaultTo(true);
-    table.boolean("isComplete").defaultTo(true);
+    table.boolean("is_complete").defaultTo(true);
     table.timestamps(true, true);
   });
 };
