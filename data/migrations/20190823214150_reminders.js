@@ -5,6 +5,8 @@ exports.up = function(knex) {
     table.foreign("animal_id").references("animals.id");
     table.integer("action_id").unsigned();
     table.foreign("action_id").references("actions.id");
+    table.integer("org_id").unsigned();
+    table.foreign("org_id").references("orgs.id");
     table.integer("last_occurance").unsigned();
     table.foreign("last_occurance").references("history.id");
     table.integer("frequency");
