@@ -7,6 +7,16 @@ exports.up = function(knex) {
     table.foreign("action_id").references("actions.id");
     table.boolean("success").defaultTo(true);
     table.boolean("is_complete").defaultTo(true);
+    table.integer("initiating_user").unsigned();
+    table
+      .foreign("initiating_user")
+      .references("users.id")
+      .onDelete("SET NULL");
+    table.integer("closing_user").unsigned();
+    table
+      .foreign("closing_user")
+      .references("users.id")
+      .onDelete("SET NULL");
     table.timestamps(true, true);
   });
 };
