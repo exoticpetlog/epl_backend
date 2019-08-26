@@ -21,6 +21,11 @@ exports.up = function(knex) {
       .foreign("last_occurance")
       .references("history.id")
       .onDelete("SET NULL");
+    table.integer("user_id").unsigned();
+    table
+      .foreign("user_id")
+      .references("users.id")
+      .onDelete("SET NULL");
     table.integer("frequency");
     table.date("next_due");
   });
