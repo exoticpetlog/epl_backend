@@ -1,9 +1,15 @@
 exports.up = function(knex) {
   return knex.schema.createTable("animals_categories", table => {
     table.integer("animal_id").unsigned();
-    table.foreign("animal_id").references("animals.id");
+    table
+      .foreign("animal_id")
+      .references("animals.id")
+      .onDelete("CASCADE");
     table.integer("category_id").unsigned();
-    table.foreign("category_id").references("categories.id");
+    table
+      .foreign("category_id")
+      .references("categories.id")
+      .onDelete("CASCADE");
     table.timestamps(true, true);
   });
 };

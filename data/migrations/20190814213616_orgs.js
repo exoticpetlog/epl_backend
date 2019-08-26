@@ -6,7 +6,10 @@ exports.up = function(knex) {
       .notNullable()
       .unique();
     table.integer("owner_id").unsigned();
-    table.foreign("owner_id").references("users.id");
+    table
+      .foreign("owner_id")
+      .references("users.id")
+      .onDelete("RESTRICT");
     table.timestamps(true, true);
   });
 };
