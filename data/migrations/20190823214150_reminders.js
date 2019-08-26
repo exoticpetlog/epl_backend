@@ -2,13 +2,25 @@ exports.up = function(knex) {
   return knex.schema.createTable("reminders", table => {
     table.increments("id");
     table.integer("animal_id").unsigned();
-    table.foreign("animal_id").references("animals.id");
+    table
+      .foreign("animal_id")
+      .references("animals.id")
+      .onDelete("CASCADE");
     table.integer("action_id").unsigned();
-    table.foreign("action_id").references("actions.id");
+    table
+      .foreign("action_id")
+      .references("actions.id")
+      .onDelete("CASCADE");
     table.integer("org_id").unsigned();
-    table.foreign("org_id").references("orgs.id");
+    table
+      .foreign("org_id")
+      .references("orgs.id")
+      .onDelete("CASCADE");
     table.integer("last_occurance").unsigned();
-    table.foreign("last_occurance").references("history.id");
+    table
+      .foreign("last_occurance")
+      .references("history.id")
+      .onDelete("SET NULL");
     table.integer("frequency");
     table.date("next_due");
   });
