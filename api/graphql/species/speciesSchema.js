@@ -24,6 +24,9 @@ const speciesType = new GraphQLObjectType({
 const speciesQueryFields = {
   species: {
     type: new GraphQLList(speciesType),
+    args: {
+      org_id: new GraphQLNonNull(GraphQLInt)
+    },
     resolve: getSpecies
   }
 };

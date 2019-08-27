@@ -2,14 +2,22 @@ const db = require("../../../config/dbConfig.js");
 const { GraphQLError } = require("graphql");
 
 module.exports = {
-  getOrgs: async (parentValue, args, req) => {
-    // const orgs = await db("users_orgs")
-    //   .where({ user_id: req.user.id })
-    //   .join("orgs", "orgs.id", "=", "users_orgs.org_id");
-    // return orgs;
+  getSpecies: async (parentValue, args, req) => {
+    // check user requesting is part of org
+    const hasAccess = await db("users_orgs")
+      .where({
+        org_id: args.org_id,
+        user_id: req.user.id
+      })
+      .first();
+    if (!hasAccess) {
+      throw new GraphQLError(`You do not have access to org: ${args.org_id}`);
+    }
+    const species = await db("species").where({ org_id: args.org_id });
+    return species;
   },
 
-  createOrg: async (parentValue, args, req) => {
+  createSpecies: async (parentValue, args, req) => {
     // const [newOrg] = await db("orgs")
     //   .insert({
     //     name: args.name,
@@ -23,7 +31,7 @@ module.exports = {
     // return newOrg;
   },
 
-  updateOrg: async (parentValue, args, req) => {
+  updateSpecies: async (parentValue, args, req) => {
     // check org belongs to user
     // const org = await db("orgs")
     //   .where({ id: args.id })
