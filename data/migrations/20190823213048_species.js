@@ -1,13 +1,15 @@
 exports.up = function(knex) {
   return knex.schema.createTable("species", table => {
     table.increments("id");
-    table.integer("org_id").unsigned();
+    table
+      .integer("org_id")
+      .unsigned()
+      .index();
     table
       .foreign("org_id")
       .references("orgs.id")
+      .onUpdate("CASCADE")
       .onDelete("CASCADE");
-    // onUpdate ?
-    // force index ?
     table.string("name").notNullable();
   });
 };
