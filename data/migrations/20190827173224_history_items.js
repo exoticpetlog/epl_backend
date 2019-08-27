@@ -3,18 +3,18 @@ exports.up = function(knex) {
     table
       .integer("history_id")
       .unsigned()
-      .index();
+      .unique();
     table
       .foreign("history_id")
       .references("history.id")
       .onUpdate("CASCADE")
       .onDelete("CASCADE");
     table
-      .integer("items_id")
+      .integer("item_id")
       .unsigned()
       .index();
     table
-      .foreign("items_id")
+      .foreign("item_id")
       .references("items.id")
       .onUpdate("CASCADE")
       .onDelete("CASCADE");
