@@ -28,32 +28,17 @@ module.exports = {
   },
 
   updateSpecies: async (parentValue, args, req) => {
-    // check org belongs to user
-    // const org = await db("orgs")
-    //   .where({ id: args.id })
-    //   .first();
-    // if (!org) {
-    //   throw new GraphQLError(`org of id: ${args.id} does not exist`);
-    // }
-    // if (req.user.id !== org.owner_id) {
-    //   throw new GraphQLError("your are not the owner of this org");
-    // }
-    // // if owner_id is in args, check there is user with that id
-    // if (args.owner_id) {
-    //   const new_owner = await db("users")
-    //     .where({ id: args.owner_id })
-    //     .first();
-    //   if (!new_owner) {
-    //     throw new GraphQLError(
-    //       `no user of id: ${args.owner_id} exists to take take ownership`
-    //     );
-    //   }
-    // }
-    // // update the club info
-    // const [updated] = await db("orgs")
-    //   .where({ id: args.id })
-    //   .update(args)
-    //   .returning("*");
-    // return updated;
+    // check species of id is of proper org
+    const speciesToUpdate = await db("species")
+      .where({ id: args.id })
+      .first();
+    args.org_id = speciesToUpdate.org_id;
+    await checkAccess(args, req);
+    delete args.org_id;
+    const [updated] = await db("species")
+      .where({ id: args.id })
+      .update(args)
+      .returning("*");
+    return updated;
   }
 };
