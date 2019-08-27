@@ -9,7 +9,7 @@ async function checkAccess(args, req) {
     })
     .first();
   if (!hasAccess) {
-    throw new GraphQLError(`You do not have access to org: ${org_id}`);
+    throw new GraphQLError(`You do not have access to org: ${args.org_id}`);
   }
 }
 
