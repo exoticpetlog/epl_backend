@@ -35,6 +35,9 @@ module.exports = {
       .join("animals", "animals.id", "=", "history.animal_id")
       .first();
     await checkAccess(historyItem, req);
+    if (!historyItem.is_complete && args.is_complete) {
+      args.closing_user = req.user.id;
+    }
     const [updated] = await db("history")
       .where({ id: args.id })
       .update(args)
