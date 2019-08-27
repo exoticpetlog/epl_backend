@@ -6,11 +6,15 @@ exports.up = function(knex) {
       .foreign("species_id")
       .references("species.id")
       .onDelete("SET NULL");
+    // onUpdate ?
+    // force index ?
     table.integer("org_id").unsigned();
     table
       .foreign("org_id")
       .references("orgs.id")
       .onDelete("CASCADE");
+    // onUpdate ?
+    // force index ?
     table.string("name").notNullable();
     table.string("description");
     table.text("notes");

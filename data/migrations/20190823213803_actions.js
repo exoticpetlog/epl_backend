@@ -6,6 +6,8 @@ exports.up = function(knex) {
       .foreign("species_id")
       .references("species.id")
       .onDelete("CASCADE");
+    // onUpdate ?
+    // force index ?
     table.string("name").notNullable();
     table.boolean("two_stage").defaultTo(false);
   });

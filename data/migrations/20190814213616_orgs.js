@@ -5,11 +5,14 @@ exports.up = function(knex) {
       .string("name")
       .notNullable()
       .unique();
+    //  forces index ?? - yes
     table.integer("owner_id").unsigned();
     table
       .foreign("owner_id")
       .references("users.id")
       .onDelete("RESTRICT");
+    //onUpdate ? cascade
+    // force Index.
     table.timestamps(true, true);
   });
 };

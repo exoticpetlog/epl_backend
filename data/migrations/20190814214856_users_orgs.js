@@ -5,11 +5,15 @@ exports.up = function(knex) {
       .foreign("user_id")
       .references("users.id")
       .onDelete("CASCADE");
+    // on update?
+    // force index
     table.integer("org_id").unsigned();
     table
       .foreign("org_id")
       .references("orgs.id")
       .onDelete("CASCADE");
+    // on update?
+    // force index
     table.timestamps(true, true);
   });
 };

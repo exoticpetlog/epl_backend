@@ -6,6 +6,8 @@ exports.up = function(knex) {
       .foreign("org_id")
       .references("orgs.id")
       .onDelete("CASCADE");
+    // onUpdate ?
+    // force index ?
     table.string("name").notNullable();
   });
 };

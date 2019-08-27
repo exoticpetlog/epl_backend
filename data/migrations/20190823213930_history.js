@@ -6,11 +6,15 @@ exports.up = function(knex) {
       .foreign("animal_id")
       .references("animals.id")
       .onDelete("CASCADE");
+    // onUpdate ?
+    // force index ?
     table.integer("action_id").unsigned();
     table
       .foreign("action_id")
       .references("actions.id")
       .onDelete("CASCADE");
+    // onUpdate ?
+    // force index ?
     table.boolean("success").defaultTo(true);
     table.boolean("is_complete").defaultTo(true);
     table.integer("initiating_user").unsigned();
@@ -18,11 +22,15 @@ exports.up = function(knex) {
       .foreign("initiating_user")
       .references("users.id")
       .onDelete("SET NULL");
+    // onUpdate ?
+    // force index ?
     table.integer("closing_user").unsigned();
     table
       .foreign("closing_user")
       .references("users.id")
       .onDelete("SET NULL");
+    // onUpdate ?
+    // force index ?
     table.timestamps(true, true);
   });
 };
