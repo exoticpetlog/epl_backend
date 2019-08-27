@@ -43,25 +43,31 @@ const animalsQueryFields = {
   }
 };
 
-//   const speciesMutationFields = {
-//     createSpecies: {
-//       type: speciesType,
-//       args: {
-//         name: { type: new GraphQLNonNull(GraphQLString) },
-//         org_id: { type: new GraphQLNonNull(GraphQLInt) }
-//       },
-//       resolve: createSpecies
-//     },
-//     updateSpecies: {
-//       type: speciesType,
-//       args: {
-//         id: { type: new GraphQLNonNull(GraphQLInt) },
-//         name: { type: GraphQLString },
-//         org_id: { type: GraphQLInt }
-//       },
-//       resolve: updateSpecies
-//     }
-//   };
+const animalsMutationFields = {
+  createAnimal: {
+    type: animalsType,
+    args: {
+      name: { type: new GraphQLNonNull(GraphQLString) },
+      org_id: { type: new GraphQLNonNull(GraphQLInt) },
+      species_id: { type: new GraphQLNonNull(GraphQLInt) },
+      description: { type: GraphQLString },
+      notes: { type: GraphQLString }
+    },
+    resolve: createAnimal
+  },
+  updateAnimal: {
+    type: animalsType,
+    args: {
+      id: { type: new GraphQLNonNull(GraphQLInt) },
+      name: { type: GraphQLString },
+      org_id: { type: GraphQLInt },
+      species_id: { type: GraphQLInt },
+      description: { type: GraphQLString },
+      notes: { type: GraphQLString }
+    },
+    resolve: updateAnimal
+  }
+};
 
 module.exports = {
   animalsQueryFields,
