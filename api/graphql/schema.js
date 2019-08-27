@@ -1,14 +1,17 @@
 const { GraphQLObjectType, GraphQLSchema } = require("graphql");
 
-const { orgsQueryFields, orgsMutationFields } = require("./orgs/orgsSchema.js");
+const {
+  orgsQueryFields,
+  orgsMutationFields
+} = require("./fields/orgs/orgsSchema.js");
 const {
   speciesQueryFields,
   speciesMutationFields
-} = require("./species/speciesSchema.js");
+} = require("./fields/species/speciesSchema.js");
 const {
   animalsQueryFields,
   animalsMutationFields
-} = require("./animals/animalsSchema.js");
+} = require("./fields/animals/animalsSchema.js");
 
 const rootQuery = new GraphQLObjectType({
   name: "RootQueryType",

@@ -1,17 +1,5 @@
-const db = require("../../../config/dbConfig.js");
-const { checkAccess } = require("../authorization/accessHelpers.js");
-
-// async function checkAccess(args, req) {
-//   const hasAccess = await db("users_orgs")
-//     .where({
-//       org_id: args.org_id,
-//       user_id: req.user.id
-//     })
-//     .first();
-//   if (!hasAccess) {
-//     throw new GraphQLError(`You do not have access to org: ${args.org_id}`);
-//   }
-// }
+const db = require("../../../../config/dbConfig.js");
+const { checkAccess } = require("../../authorization/accessHelpers.js");
 
 module.exports = {
   getAnimals: async (parentValue, args, req) => {
