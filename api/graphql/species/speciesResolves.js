@@ -9,7 +9,7 @@ async function checkAccess(args, req) {
     })
     .first();
   if (!hasAccess) {
-    throw new GraphQLError(`You do not have access to org: ${args.org_id}`);
+    throw new GraphQLError(`You do not have access to org: ${org_id}`);
   }
 }
 
@@ -29,12 +29,10 @@ module.exports = {
 
   updateSpecies: async (parentValue, args, req) => {
     // check species of id is of proper org
-    const speciesToUpdate = await db("species")
+    const toUpdate = await db("species")
       .where({ id: args.id })
       .first();
-    args.org_id = speciesToUpdate.org_id;
-    await checkAccess(args, req);
-    delete args.org_id;
+    await checkAccess(toUpdate, req);
     const [updated] = await db("species")
       .where({ id: args.id })
       .update(args)
