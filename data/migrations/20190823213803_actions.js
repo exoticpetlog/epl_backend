@@ -12,6 +12,7 @@ exports.up = function(knex) {
       .onDelete("CASCADE");
     table.string("name").notNullable();
     table.boolean("two_stage").defaultTo(false);
+    table.boolean("has_items").defaultTo(false);
   });
 };
 
