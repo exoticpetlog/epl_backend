@@ -1,5 +1,5 @@
-const db = require("../../../config/dbConfig.js");
-const { checkAccess } = require("../authorization/accessHelpers.js");
+const db = require("../../../../config/dbConfig.js");
+const { checkAccess } = require("../../authorization/accessHelpers.js");
 
 module.exports = {
   getSpecies: async (parentValue, args, req) => {
