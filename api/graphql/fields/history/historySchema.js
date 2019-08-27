@@ -43,13 +43,14 @@ module.exports = {
       type: historyType,
       args: {
         animal_id: { type: new GraphQLNonNull(GraphQLInt) },
-        action_id: { type: GraphQLInt }
+        action_id: { type: new GraphQLNonNull(GraphQLInt) }
       },
       resolve: createHistory
     },
     updateHistory: {
       type: historyType,
       args: {
+        id: { type: new GraphQLNonNull(GraphQLInt) },
         success: { type: GraphQLBoolean },
         is_complete: { type: GraphQLBoolean }
       },
