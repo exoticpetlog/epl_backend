@@ -10,7 +10,7 @@ const {
   getSpecies,
   createSpecies,
   updateSpecies
-} = require("./speciesResolves");
+} = require("./speciesResolves.js");
 
 const speciesType = new GraphQLObjectType({
   name: "species",
@@ -25,7 +25,7 @@ const speciesQueryFields = {
   species: {
     type: new GraphQLList(speciesType),
     args: {
-      org_id: new GraphQLNonNull(GraphQLInt)
+      org_id: { type: new GraphQLNonNull(GraphQLInt) }
     },
     resolve: getSpecies
   }
