@@ -28,7 +28,32 @@ const historyType = new GraphQLObjectType({
 });
 
 module.exports = {
-  historyQueryFields: {},
+  historyQueryFields: {
+    history: {
+      type: new GraphQLList(historyType),
+      args: {
+        animal_id: { type: new GraphQLNonNull(GraphQLInt) }
+      },
+      resolve: getHistory
+    }
+  },
 
-  historyMutationFields: {}
+  historyMutationFields: {
+    createHistory: {
+      type: historyType,
+      args: {
+        animal_id: { type: new GraphQLNonNull(GraphQLInt) },
+        action_id: { type: GraphQLInt }
+      },
+      resolve: createHistory
+    },
+    updateHistory: {
+      type: historyType,
+      args: {
+        success: { type: GraphQLBoolean },
+        is_complete: { type: GraphQLBoolean }
+      },
+      resolve: updateHistory
+    }
+  }
 };
