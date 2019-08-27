@@ -5,10 +5,14 @@ exports.up = function(knex) {
       .string("name")
       .notNullable()
       .unique();
-    table.integer("owner_id").unsigned();
+    table
+      .integer("owner_id")
+      .unsigned()
+      .index();
     table
       .foreign("owner_id")
       .references("users.id")
+      .onUpdate("CASCADE")
       .onDelete("RESTRICT");
     table.timestamps(true, true);
   });

@@ -5,27 +5,39 @@ exports.up = function(knex) {
     table
       .foreign("animal_id")
       .references("animals.id")
+      .onUpdate("CASCADE")
       .onDelete("CASCADE");
+    // ^^ force index ?  or not needed? .. leave out for now...
     table.integer("action_id").unsigned();
     table
       .foreign("action_id")
       .references("actions.id")
+      .onUpdate("CASCADE")
       .onDelete("CASCADE");
-    table.integer("org_id").unsigned();
+    // ^^ force index ?  or not needed? .. leave out for now...
+    table
+      .integer("org_id")
+      .unsigned()
+      .index();
     table
       .foreign("org_id")
       .references("orgs.id")
+      .onUpdate("CASCADE")
       .onDelete("CASCADE");
     table.integer("last_occurance").unsigned();
     table
       .foreign("last_occurance")
       .references("history.id")
+      .onUpdate("CASCADE")
       .onDelete("SET NULL");
+    // ^^ force index ?  or not needed? .. leave out for now...
     table.integer("user_id").unsigned();
     table
       .foreign("user_id")
       .references("users.id")
+      .onUpdate("CASCADE")
       .onDelete("SET NULL");
+    // ^^ force index ?  or not needed? .. leave out for now...
     table.integer("frequency");
     table.date("next_due");
   });
