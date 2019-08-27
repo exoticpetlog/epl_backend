@@ -1,34 +1,30 @@
 const db = require("../../../config/dbConfig.js");
 const { GraphQLError } = require("graphql");
 
+async function checkAccess(args, req) {
+  const hasAccess = await db("users_orgs")
+    .where({
+      org_id: args.org_id,
+      user_id: req.user.id
+    })
+    .first();
+  if (!hasAccess) {
+    throw new GraphQLError(`You do not have access to org: ${args.org_id}`);
+  }
+}
+
 module.exports = {
   getSpecies: async (parentValue, args, req) => {
-    // check user requesting is part of org
-    const hasAccess = await db("users_orgs")
-      .where({
-        org_id: args.org_id,
-        user_id: req.user.id
-      })
-      .first();
-    if (!hasAccess) {
-      throw new GraphQLError(`You do not have access to org: ${args.org_id}`);
-    }
-    const species = await db("species").where({ org_id: args.org_id });
-    return species;
+    await checkAccess(args, req);
+    return await db("species").where({ org_id: args.org_id });
   },
 
   createSpecies: async (parentValue, args, req) => {
-    // const [newOrg] = await db("orgs")
-    //   .insert({
-    //     name: args.name,
-    //     owner_id: req.user.id
-    //   })
-    //   .returning("*");
-    // await db("users_orgs").insert({
-    //   user_id: req.user.id,
-    //   org_id: Number(newOrg.id)
-    // });
-    // return newOrg;
+    await checkAccess(args, req);
+    const [newSpecies] = await db("species")
+      .insert({ org_id: args.org_id, name: args.name })
+      .returning("*");
+    return newSpecies;
   },
 
   updateSpecies: async (parentValue, args, req) => {
