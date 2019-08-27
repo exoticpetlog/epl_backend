@@ -5,12 +5,17 @@ const {
   speciesQueryFields,
   speciesMutationFields
 } = require("./species/speciesSchema.js");
+const {
+  animalsQueryFields,
+  animalsMutationFields
+} = require("./animals/animalsSchema.js");
 
 const rootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
     ...orgsQueryFields,
-    ...speciesQueryFields
+    ...speciesQueryFields,
+    ...animalsQueryFields
   }
 });
 
@@ -18,7 +23,8 @@ const mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
     ...orgsMutationFields,
-    ...speciesMutationFields
+    ...speciesMutationFields,
+    ...animalsMutationFields
   }
 });
 
