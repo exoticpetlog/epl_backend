@@ -1,5 +1,4 @@
 const { GraphQLObjectType, GraphQLSchema } = require("graphql");
-
 const {
   orgsQueryFields,
   orgsMutationFields
@@ -24,6 +23,10 @@ const {
   itemsQueryFields,
   itemsMutationFields
 } = require("./fields/items/itemsSchema.js");
+const {
+  remindersQueryFields,
+  remindersMutationFields
+} = require("./fields/reminders/remindersSchema.js");
 
 const rootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -33,7 +36,8 @@ const rootQuery = new GraphQLObjectType({
     ...animalsQueryFields,
     ...actionsQueryFields,
     ...historyQueryFields,
-    ...itemsQueryFields
+    ...itemsQueryFields,
+    ...remindersQueryFields
   }
 });
 
@@ -45,7 +49,8 @@ const mutation = new GraphQLObjectType({
     ...animalsMutationFields,
     ...actionsMutationFields,
     ...historyMutationFields,
-    ...itemsMutationFields
+    ...itemsMutationFields,
+    ...remindersMutationFields
   }
 });
 

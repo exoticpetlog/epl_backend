@@ -42,7 +42,7 @@ module.exports = {
 
   remindersMutationFields: {
     createReminder: {
-      type: RemindersType,
+      type: remindersType,
       args: {
         animal_id: { type: new GraphQLNonNull(GraphQLInt) },
         action_id: { type: new GraphQLNonNull(GraphQLInt) },
