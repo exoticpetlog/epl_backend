@@ -34,6 +34,17 @@ exports.up = function(knex) {
       .onUpdate("CASCADE")
       .onDelete("SET NULL");
     // ^^ force index ?  or not needed? .. leave out for now...
+    table.integer("item_id").unsigned();
+    table
+      .foreign("item_id")
+      .references("items.id")
+      .onUpdate("CASCADE")
+      .onDelete("SET NULL");
+    // ^^ force index ?  or not needed? .. leave out for now...
+    table
+      .integer("quantity")
+      .unsigned()
+      .defaultTo(1);
     table.timestamps(true, true);
   });
 };

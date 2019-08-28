@@ -23,7 +23,9 @@ const historyType = new GraphQLObjectType({
     is_complete: { type: GraphQLBoolean },
     initiating_user: { type: GraphQLInt },
     closing_user: { type: GraphQLInt },
-    created_at: { type: GraphQLString }
+    created_at: { type: GraphQLString },
+    item_id: { type: GraphQLInt },
+    quantity: { type: GraphQLString }
   })
 });
 
@@ -43,7 +45,9 @@ module.exports = {
       type: historyType,
       args: {
         animal_id: { type: new GraphQLNonNull(GraphQLInt) },
-        action_id: { type: new GraphQLNonNull(GraphQLInt) }
+        action_id: { type: new GraphQLNonNull(GraphQLInt) },
+        item_id: { type: GraphQLInt },
+        quantity: { type: GraphQLInt }
       },
       resolve: createHistory
     },
@@ -52,7 +56,9 @@ module.exports = {
       args: {
         id: { type: new GraphQLNonNull(GraphQLInt) },
         success: { type: GraphQLBoolean },
-        is_complete: { type: GraphQLBoolean }
+        is_complete: { type: GraphQLBoolean },
+        item_id: { type: GraphQLInt },
+        quantity: { type: GraphQLInt }
       },
       resolve: updateHistory
     }
