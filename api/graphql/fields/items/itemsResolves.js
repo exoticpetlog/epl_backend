@@ -4,7 +4,7 @@ const { checkAccess } = require("../../authorization/accessHelpers.js");
 module.exports = {
   getItems: async (parentValue, args, req) => {
     const action = await db("actions")
-      .where({ id: args.action_id })
+      .where({ "actions.id": args.action_id })
       .join("species", "species.id", "=", "actions.species_id")
       .first();
     await checkAccess(action, req);
@@ -25,7 +25,7 @@ module.exports = {
 
   updateItem: async (parentValue, args, req) => {
     const item = await db("items")
-      .where({ id: args.id })
+      .where({ "items.id": args.id })
       .join("actions", "actions.id", "=", "items.action_id")
       .join("species", "species.id", "=", "actions.species_id");
     await checkAccess(item, req);

@@ -4,7 +4,7 @@ const { GraphQLError } = require("graphql");
 module.exports = {
   getOrgs: async (parentValue, args, req) => {
     const orgs = await db("users_orgs")
-      .where({ user_id: req.user.id })
+      .where({ "users_orgs.user_id": req.user.id })
       .join("orgs", "orgs.id", "=", "users_orgs.org_id");
     return orgs;
   },
