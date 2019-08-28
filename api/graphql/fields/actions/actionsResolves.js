@@ -21,7 +21,7 @@ module.exports = {
   },
   updateAction: async (parentValue, args, req) => {
     const species = await db("actions")
-      .where({ id: args.id })
+      .where({ "actions.id": args.id })
       .join("species", "species.id", "=", "actions.species_id");
     await checkAccess(species, req);
     const [updated] = await db("actions")
