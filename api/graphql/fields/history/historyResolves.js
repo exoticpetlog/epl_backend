@@ -9,13 +9,16 @@ module.exports = {
     await checkAccess(animal, req);
     return await db("history").where({ animal_id: args.animal_id });
   },
+
   createHistory: async (parentValue, args, req) => {
     const animal = await db("animals")
       .where({ id: args.animal_id })
       .first();
     await checkAccess(animal, req);
     args.initiating_user = req.user.id;
-    const action = await db("actions").where({ id: args.action_id });
+    const action = await db("actions")
+      .where({ id: args.action_id })
+      .first();
     if (action.two_stage) {
       args.is_complete = false;
       args.success = false;
@@ -29,9 +32,10 @@ module.exports = {
       .returning("*");
     return inserted;
   },
+
   updateHistory: async (parentValue, args, req) => {
     const historyItem = await db("history")
-      .where({ id: args.id })
+      .where({ "history.id": args.id })
       .join("animals", "animals.id", "=", "history.animal_id")
       .first();
     await checkAccess(historyItem, req);

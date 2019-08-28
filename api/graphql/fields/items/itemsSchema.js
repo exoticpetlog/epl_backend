@@ -28,7 +28,7 @@ const itemsQueryFields = {
 };
 
 const itemsMutationFields = {
-  createItems: {
+  createItem: {
     type: itemsType,
     args: {
       name: { type: new GraphQLNonNull(GraphQLString) },
