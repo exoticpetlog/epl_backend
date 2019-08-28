@@ -11,10 +11,10 @@ module.exports = {
     await checkAccess(args, req);
     if (!args.next_due) {
       let now = new Date();
-      args.next_due = now;
       if (args.frequency) {
-        args.next_due = now.setDate(now.getDate() + frequency);
+        now.setDate(now.getDate() + args.frequency);
       }
+      args.next_due = now.toDateString();
     }
     const [inserted] = await db("reminders")
       .insert(args)
@@ -31,12 +31,12 @@ module.exports = {
     if (args.last_occurance && !args.next_due) {
       let now = new Date();
       let frequency = args.frequency || reminder.frequency;
-      args.next_due = now.setDate(now.getDate() + frequency);
+      now.setDate(now.getDate() + frequency);
+      args.next_due = now.toDateString();
     } else if (args.frequency && !args.next_due) {
-      let date = reminder.next_due;
-      args.next_due = date.setDate(
-        date.getDate() + (args.frequency - reminder.frequency)
-      );
+      let date = new Date(reminder.next_due);
+      date.setDate(date.getDate() + (args.frequency - reminder.frequency));
+      args.next_due = date.toDateString();
     }
     const [updated] = await db("reminders")
       .where({ id: args.id })

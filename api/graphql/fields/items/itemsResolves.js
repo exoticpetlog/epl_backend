@@ -13,7 +13,7 @@ module.exports = {
 
   createItem: async (parentValue, args, req) => {
     const action = await db("actions")
-      .where({ id: args.action_id })
+      .where({ "actions.id": args.action_id })
       .join("species", "species.id", "=", "actions.species_id")
       .first();
     await checkAccess(action, req);
