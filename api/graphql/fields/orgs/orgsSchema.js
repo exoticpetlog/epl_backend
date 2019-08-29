@@ -7,6 +7,7 @@ const {
 } = require("graphql");
 
 const { getOrgs, createOrg, updateOrg } = require("./orgsResolves");
+const { membersQueryFields } = require("./members/membersSchema.js");
 
 const orgsType = new GraphQLObjectType({
   name: "orgs",
@@ -21,7 +22,8 @@ const orgsQueryFields = {
   orgs: {
     type: new GraphQLList(orgsType),
     resolve: getOrgs
-  }
+  },
+  ...membersQueryFields
 };
 
 const orgsMutationFields = {

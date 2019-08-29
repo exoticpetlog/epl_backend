@@ -12,5 +12,13 @@ module.exports = {
     if (!hasAccess) {
       throw new GraphQLError(`You do not have access to org: ${args.org_id}`);
     }
+  },
+  checkOwner: async (args, req) => {
+    const org = await db("orgs")
+      .where({ id: args.org_id })
+      .first();
+    if (req.user.id != org.owner_id) {
+      throw new GraphQLError("Only the owner may add members...");
+    }
   }
 };
