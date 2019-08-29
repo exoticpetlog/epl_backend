@@ -47,5 +47,21 @@ module.exports = {
     return added;
   },
 
-  removeMember: async (parentValue, args, req) => {},
+  removeMember: async (parentValue, args, req) => {
+    // allow user to remove self, otherwise check ownership to remove others
+    let owner_id;
+    if (args.user_id !== req.user.id) {
+      owner_id = await checkOwner(args, req);
+    }
+    // restrict removing owner of org
+    if (args.user_id == owner_id) {
+      throw new GraphQLError("Cannot remove the owner of the org.");
+    }
+    const [deleted] = await db("users_orgs")
+      .where({ user_id: args.user_id, org_id: args.org_id })
+      .delete()
+      .returning("*");
+
+    return deleted;
+  },
 };
