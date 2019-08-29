@@ -31,7 +31,7 @@ module.exports = {
       }
       if (!user) {
         throw new GraphQLError(
-          `user not found by username: ${args.username} or email: {args.email}`
+          `user not found by username: ${args.username} or email: ${args.email}`
         );
       }
     } else {
@@ -48,20 +48,25 @@ module.exports = {
   },
 
   removeMember: async (parentValue, args, req) => {
-    // allow user to remove self, otherwise check ownership to remove others
-    let owner_id;
-    if (args.user_id !== req.user.id) {
-      owner_id = await checkOwner(args, req);
-    }
+    const org = await db("orgs")
+      .where({ id: args.org_id })
+      .first();
     // restrict removing owner of org
-    if (args.user_id == owner_id) {
+    if (args.user_id == org.owner_id) {
       throw new GraphQLError("Cannot remove the owner of the org.");
     }
-    const [deleted] = await db("users_orgs")
-      .where({ user_id: args.user_id, org_id: args.org_id })
-      .delete()
-      .returning("*");
-
-    return deleted;
+    // owner removes any, non-owner removes self
+    else if (args.user_id == req.user.id || req.user.id == org.owner_id) {
+      const user = await db("users")
+        .where({ id: args.user_id })
+        .first();
+      const [deleted] = await db("users_orgs")
+        .where({ user_id: args.user_id, org_id: args.org_id })
+        .delete()
+        .returning("*");
+      deleted.username = user.username;
+      deleted.email = user.email;
+      return deleted;
+    }
   },
 };

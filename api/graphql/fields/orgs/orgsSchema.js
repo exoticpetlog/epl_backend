@@ -3,49 +3,53 @@ const {
   GraphQLString,
   GraphQLInt,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
 } = require("graphql");
 
 const { getOrgs, createOrg, updateOrg } = require("./orgsResolves");
-const { membersQueryFields } = require("./members/membersSchema.js");
+const {
+  membersQueryFields,
+  membersMutationFields,
+} = require("./members/membersSchema.js");
 
 const orgsType = new GraphQLObjectType({
   name: "orgs",
   fields: () => ({
     id: { type: GraphQLInt },
     name: { type: GraphQLString },
-    owner_id: { type: GraphQLInt }
-  })
+    owner_id: { type: GraphQLInt },
+  }),
 });
 
 const orgsQueryFields = {
   orgs: {
     type: new GraphQLList(orgsType),
-    resolve: getOrgs
+    resolve: getOrgs,
   },
-  ...membersQueryFields
+  ...membersQueryFields,
 };
 
 const orgsMutationFields = {
   createOrg: {
     type: orgsType,
     args: {
-      name: { type: new GraphQLNonNull(GraphQLString) }
+      name: { type: new GraphQLNonNull(GraphQLString) },
     },
-    resolve: createOrg
+    resolve: createOrg,
   },
   updateOrg: {
     type: orgsType,
     args: {
       id: { type: new GraphQLNonNull(GraphQLInt) },
       name: { type: GraphQLString },
-      owner_id: { type: GraphQLInt }
+      owner_id: { type: GraphQLInt },
     },
-    resolve: updateOrg
-  }
+    resolve: updateOrg,
+  },
+  ...membersMutationFields,
 };
 
 module.exports = {
   orgsQueryFields,
-  orgsMutationFields
+  orgsMutationFields,
 };
