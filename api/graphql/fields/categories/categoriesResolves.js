@@ -18,5 +18,15 @@ module.exports = {
     return inserted;
   },
 
-  updateCategory: async (parentValue, args, req) => {},
+  updateCategory: async (parentValue, args, req) => {
+    const category = await db("categories")
+      .where({ id: args.id })
+      .first();
+    await checkAccess(category, req);
+    const [updated] = await db("categories")
+      .where({ id: args.id })
+      .update(args)
+      .returning("*");
+    return updated;
+  },
 };
