@@ -6,7 +6,7 @@ module.exports = {
     const hasAccess = await db("users_orgs")
       .where({
         org_id: args.org_id,
-        user_id: req.user.id
+        user_id: req.user.id,
       })
       .first();
     if (!hasAccess) {
@@ -20,5 +20,6 @@ module.exports = {
     if (req.user.id != org.owner_id) {
       throw new GraphQLError("Only the owner may add members...");
     }
-  }
+    return org.owner_id;
+  },
 };
