@@ -18,7 +18,7 @@ const tagsMutationFields = {
     type: animalsType,
     args: {
       animal_id: { type: new GraphQLNonNull(GraphQLInt) },
-      tag_id: { type: new GraphQLNonNull(GraphQLInt) },
+      category_id: { type: new GraphQLNonNull(GraphQLInt) },
     },
     resolve: addTag,
   },
@@ -26,7 +26,7 @@ const tagsMutationFields = {
     type: animalsType,
     args: {
       animal_id: { type: new GraphQLNonNull(GraphQLInt) },
-      tag_id: { type: new GraphQLNonNull(GraphQLInt) },
+      category_id: { type: new GraphQLNonNull(GraphQLInt) },
     },
     resolve: removeTag,
   },

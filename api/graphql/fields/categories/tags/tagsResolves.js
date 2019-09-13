@@ -21,7 +21,20 @@ module.exports = {
     return animalList;
   },
 
-  addTag: async (parentValue, args, req) => {},
+  addTag: async (parentValue, args, req) => {
+    // check both animal and category have same org_id
+    const category = await db("categories").where({ id: args.category_id });
+    const animal = await db("animals").where({ id: args.animal_id });
+    if (animal.org_id != category.org_id) {
+      throw new GraphQLError(
+        "Animal and Category must belong to the same organization"
+      );
+    }
+    await checkAccess(animal, req);
+    await db("animals_categories").insert(args);
+    // TODO - return animal with connected tags - update animals as well
+    return animal;
+  },
 
   removeTag: async (parentValue, args, req) => {},
 };
