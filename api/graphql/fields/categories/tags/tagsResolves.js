@@ -1,8 +1,5 @@
 const db = require("../../../../../config/dbConfig.js");
-const {
-  checkAccess,
-  checkOwner,
-} = require("../../../authorization/accessHelpers.js");
+const { checkAccess } = require("../../../authorization/accessHelpers.js");
 const { GraphQLError } = require("graphql");
 
 module.exports = {
@@ -36,5 +33,20 @@ module.exports = {
     return animal;
   },
 
-  removeTag: async (parentValue, args, req) => {},
+  removeTag: async (parentValue, args, req) => {
+    const animal = await db("animals").where({ id: args.animal_id });
+    await checkAccess(animal, req);
+    const tag = await db("animals_categories")
+      .where(args)
+      .delete()
+      .returning("*")
+      .first();
+    if (!tag) {
+      throw new GraphQLError(
+        `Tag for category ${args.category_id} not found on animal ${args.animal_id}`
+      );
+    }
+    // TODO - return animal with connected tags - update animals as well
+    return animal;
+  },
 };
