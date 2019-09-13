@@ -1,32 +1,36 @@
 const { GraphQLObjectType, GraphQLSchema } = require("graphql");
 const {
   orgsQueryFields,
-  orgsMutationFields
+  orgsMutationFields,
 } = require("./fields/orgs/orgsSchema.js");
 const {
   speciesQueryFields,
-  speciesMutationFields
+  speciesMutationFields,
 } = require("./fields/species/speciesSchema.js");
 const {
   animalsQueryFields,
-  animalsMutationFields
+  animalsMutationFields,
 } = require("./fields/animals/animalsSchema.js");
 const {
   actionsQueryFields,
-  actionsMutationFields
+  actionsMutationFields,
 } = require("./fields/actions/actionsSchema.js");
 const {
   historyQueryFields,
-  historyMutationFields
+  historyMutationFields,
 } = require("./fields/history/historySchema.js");
 const {
   itemsQueryFields,
-  itemsMutationFields
+  itemsMutationFields,
 } = require("./fields/items/itemsSchema.js");
 const {
   remindersQueryFields,
-  remindersMutationFields
+  remindersMutationFields,
 } = require("./fields/reminders/remindersSchema.js");
+const {
+  categoriesQueryFields,
+  categoriesMutationFields,
+} = require("./fields/categories/categoriesSchema");
 
 const rootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -37,8 +41,9 @@ const rootQuery = new GraphQLObjectType({
     ...actionsQueryFields,
     ...historyQueryFields,
     ...itemsQueryFields,
-    ...remindersQueryFields
-  }
+    ...remindersQueryFields,
+    ...categoriesQueryFields,
+  },
 });
 
 const mutation = new GraphQLObjectType({
@@ -50,11 +55,12 @@ const mutation = new GraphQLObjectType({
     ...actionsMutationFields,
     ...historyMutationFields,
     ...itemsMutationFields,
-    ...remindersMutationFields
-  }
+    ...remindersMutationFields,
+    ...categoriesMutationFields,
+  },
 });
 
 module.exports = new GraphQLSchema({
   query: rootQuery,
-  mutation
+  mutation,
 });

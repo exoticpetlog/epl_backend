@@ -3,14 +3,14 @@ const {
   GraphQLString,
   GraphQLInt,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
 } = require("graphql");
 
 const {
   getAnimal,
   getAnimals,
   createAnimal,
-  updateAnimal
+  updateAnimal,
 } = require("./animalsResolves.js");
 
 const animalsType = new GraphQLObjectType({
@@ -22,25 +22,25 @@ const animalsType = new GraphQLObjectType({
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     notes: { type: GraphQLString },
-    created_at: { type: GraphQLString }
-  })
+    created_at: { type: GraphQLString },
+  }),
 });
 
 const animalsQueryFields = {
   animals: {
     type: new GraphQLList(animalsType),
     args: {
-      org_id: { type: new GraphQLNonNull(GraphQLInt) }
+      org_id: { type: new GraphQLNonNull(GraphQLInt) },
     },
-    resolve: getAnimals
+    resolve: getAnimals,
   },
   animal: {
     type: animalsType,
     args: {
-      id: { type: new GraphQLNonNull(GraphQLInt) }
+      id: { type: new GraphQLNonNull(GraphQLInt) },
     },
-    resolve: getAnimal
-  }
+    resolve: getAnimal,
+  },
 };
 
 const animalsMutationFields = {
@@ -51,9 +51,9 @@ const animalsMutationFields = {
       org_id: { type: new GraphQLNonNull(GraphQLInt) },
       species_id: { type: new GraphQLNonNull(GraphQLInt) },
       description: { type: GraphQLString },
-      notes: { type: GraphQLString }
+      notes: { type: GraphQLString },
     },
-    resolve: createAnimal
+    resolve: createAnimal,
   },
   updateAnimal: {
     type: animalsType,
@@ -63,13 +63,14 @@ const animalsMutationFields = {
       org_id: { type: GraphQLInt },
       species_id: { type: GraphQLInt },
       description: { type: GraphQLString },
-      notes: { type: GraphQLString }
+      notes: { type: GraphQLString },
     },
-    resolve: updateAnimal
-  }
+    resolve: updateAnimal,
+  },
 };
 
 module.exports = {
   animalsQueryFields,
-  animalsMutationFields
+  animalsMutationFields,
+  animalsType,
 };
