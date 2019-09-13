@@ -1,10 +1,4 @@
-const {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-} = require("graphql");
+const { GraphQLInt, GraphQLList, GraphQLNonNull } = require("graphql");
 
 const { getByTag, addTag, removeTag } = require("./membersResolves");
 const { animalsType } = require("../../animals/animalsSchema");
