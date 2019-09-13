@@ -4,10 +4,12 @@ const { GraphQLError } = require("graphql");
 
 module.exports = {
   getByTag: async (parentValue, args, req) => {
-    const category = await db("categories").where({ id: args.category_id });
+    const category = await db("categories")
+      .where({ id: args.category_id })
+      .first();
     await checkAccess(category, req);
     const animalList = await db("categories")
-      .where({ "category.id": args.category_id })
+      .where({ "categories.id": args.category_id })
       .join(
         "animals_categories",
         "animals_categories.category_id",
@@ -20,13 +22,19 @@ module.exports = {
 
   addTag: async (parentValue, args, req) => {
     // check both animal and category have same org_id
-    const category = await db("categories").where({ id: args.category_id });
-    const animal = await db("animals").where({ id: args.animal_id });
+    const category = await db("categories")
+      .where({ id: args.category_id })
+      .first();
+    const animal = await db("animals")
+      .where({ id: args.animal_id })
+      .first();
     if (animal.org_id != category.org_id) {
       throw new GraphQLError(
         "Animal and Category must belong to the same organization"
       );
     }
+    console.log(animal.org_id);
+    console.log(req.user.id);
     await checkAccess(animal, req);
     await db("animals_categories").insert(args);
     // TODO - return animal with connected tags - update animals as well
@@ -34,7 +42,9 @@ module.exports = {
   },
 
   removeTag: async (parentValue, args, req) => {
-    const animal = await db("animals").where({ id: args.animal_id });
+    const animal = await db("animals")
+      .where({ id: args.animal_id })
+      .first();
     await checkAccess(animal, req);
     const tag = await db("animals_categories")
       .where(args)

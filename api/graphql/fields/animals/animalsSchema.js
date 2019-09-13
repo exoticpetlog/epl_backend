@@ -13,7 +13,7 @@ const {
   updateAnimal,
 } = require("./animalsResolves.js");
 
-export const animalsType = new GraphQLObjectType({
+const animalsType = new GraphQLObjectType({
   name: "animals",
   fields: () => ({
     id: { type: GraphQLInt },
@@ -72,4 +72,5 @@ const animalsMutationFields = {
 module.exports = {
   animalsQueryFields,
   animalsMutationFields,
+  animalsType,
 };

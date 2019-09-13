@@ -11,7 +11,7 @@ module.exports = {
     await checkAccess(args, req);
     const [inserted] = await db("categories")
       .insert({
-        user_id: args.user_id,
+        org_id: args.org_id,
         name: args.name,
       })
       .returning("*");
