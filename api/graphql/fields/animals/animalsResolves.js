@@ -5,8 +5,6 @@ const mergeSelections = require("../../helpers/mergeFieldNodes");
 module.exports = {
   getAnimals: async (parentValue, args, req) => {
     await checkAccess(args, req);
-
-    // TODO  if selection => retrieve things to attach...
     return await db("animals").where({ org_id: args.org_id });
   },
 
@@ -15,6 +13,7 @@ module.exports = {
       .where({ id: args.id })
       .first();
     await checkAccess(animal, req);
+    // conditional retrieval from other db table
     const selections = mergeSelections(info);
     if (selections.history) {
       animal.history = await db("history").where({ animal_id: animal.id });
