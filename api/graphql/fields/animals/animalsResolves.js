@@ -1,9 +1,14 @@
 const db = require("../../../../config/dbConfig.js");
 const { checkAccess } = require("../../authorization/accessHelpers.js");
+const mergeSelections = require("../../helpers/mergeFieldNodes");
 
 module.exports = {
-  getAnimals: async (parentValue, args, req) => {
+  getAnimals: async (parentValue, args, req, info) => {
     await checkAccess(args, req);
+    const selections = mergeSelections(info);
+    for (let i in selections) {
+      console.log(selections[i]);
+    }
     return await db("animals").where({ org_id: args.org_id });
   },
 
@@ -33,5 +38,5 @@ module.exports = {
       .update(args)
       .returning("*");
     return updated;
-  }
+  },
 };
