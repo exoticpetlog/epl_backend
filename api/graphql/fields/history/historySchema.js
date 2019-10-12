@@ -4,13 +4,13 @@ const {
   GraphQLInt,
   GraphQLBoolean,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
 } = require("graphql");
 
 const {
   getHistory,
   createHistory,
-  updateHistory
+  updateHistory,
 } = require("./historyResolves.js");
 
 const historyType = new GraphQLObjectType({
@@ -25,19 +25,20 @@ const historyType = new GraphQLObjectType({
     closing_user: { type: GraphQLInt },
     created_at: { type: GraphQLString },
     item_id: { type: GraphQLInt },
-    quantity: { type: GraphQLString }
-  })
+    quantity: { type: GraphQLString },
+  }),
 });
 
 module.exports = {
+  historyType,
   historyQueryFields: {
     history: {
       type: new GraphQLList(historyType),
       args: {
-        animal_id: { type: new GraphQLNonNull(GraphQLInt) }
+        animal_id: { type: new GraphQLNonNull(GraphQLInt) },
       },
-      resolve: getHistory
-    }
+      resolve: getHistory,
+    },
   },
 
   historyMutationFields: {
@@ -47,9 +48,9 @@ module.exports = {
         animal_id: { type: new GraphQLNonNull(GraphQLInt) },
         action_id: { type: new GraphQLNonNull(GraphQLInt) },
         item_id: { type: GraphQLInt },
-        quantity: { type: GraphQLInt }
+        quantity: { type: GraphQLInt },
       },
-      resolve: createHistory
+      resolve: createHistory,
     },
     updateHistory: {
       type: historyType,
@@ -58,9 +59,9 @@ module.exports = {
         success: { type: GraphQLBoolean },
         is_complete: { type: GraphQLBoolean },
         item_id: { type: GraphQLInt },
-        quantity: { type: GraphQLInt }
+        quantity: { type: GraphQLInt },
       },
-      resolve: updateHistory
-    }
-  }
+      resolve: updateHistory,
+    },
+  },
 };

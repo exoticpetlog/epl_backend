@@ -3,20 +3,22 @@ const { checkAccess } = require("../../authorization/accessHelpers.js");
 const mergeSelections = require("../../helpers/mergeFieldNodes");
 
 module.exports = {
-  getAnimals: async (parentValue, args, req, info) => {
+  getAnimals: async (parentValue, args, req) => {
     await checkAccess(args, req);
-    const selections = mergeSelections(info);
-    for (let i in selections) {
-      console.log(selections[i]);
-    }
+
+    // TODO  if selection => retrieve things to attach...
     return await db("animals").where({ org_id: args.org_id });
   },
 
-  getAnimal: async (parentValue, args, req) => {
+  getAnimal: async (parentValue, args, req, info) => {
     const animal = await db("animals")
       .where({ id: args.id })
       .first();
     await checkAccess(animal, req);
+    const selections = mergeSelections(info);
+    if (selections.history) {
+      animal.history = await db("history").where({ animal_id: animal.id });
+    }
     return animal;
   },
 
