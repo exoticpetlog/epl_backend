@@ -13,6 +13,10 @@ const {
   updateAnimal,
 } = require("./animalsResolves.js");
 
+const { historyType } = require("../history/historySchema");
+const { speciesType } = require("../species/speciesSchema");
+const { actionsType } = require("../actions/actionsSchema");
+
 const animalsType = new GraphQLObjectType({
   name: "animals",
   fields: () => ({
@@ -23,6 +27,9 @@ const animalsType = new GraphQLObjectType({
     description: { type: GraphQLString },
     notes: { type: GraphQLString },
     created_at: { type: GraphQLString },
+    history: { type: new GraphQLList(historyType) },
+    species: { type: speciesType },
+    actions: { type: new GraphQLList(actionsType) },
   }),
 });
 

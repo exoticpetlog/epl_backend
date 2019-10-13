@@ -4,14 +4,16 @@ const {
   GraphQLInt,
   GraphQLBoolean,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
 } = require("graphql");
 
 const {
   getActions,
   createAction,
-  updateAction
+  updateAction,
 } = require("./actionsResolves.js");
+
+const { itemsType } = require("../items/itemsSchema");
 
 const actionsType = new GraphQLObjectType({
   name: "actions",
@@ -19,18 +21,19 @@ const actionsType = new GraphQLObjectType({
     id: { type: GraphQLInt },
     species_id: { type: GraphQLInt },
     name: { type: GraphQLString },
-    two_stage: { type: GraphQLBoolean }
-  })
+    two_stage: { type: GraphQLBoolean },
+    items: { type: new GraphQLList(itemsType) },
+  }),
 });
 
 const actionsQueryFields = {
   actions: {
     type: new GraphQLList(actionsType),
     args: {
-      species_id: { type: new GraphQLNonNull(GraphQLInt) }
+      species_id: { type: new GraphQLNonNull(GraphQLInt) },
     },
-    resolve: getActions
-  }
+    resolve: getActions,
+  },
 };
 
 const actionsMutationFields = {
@@ -39,22 +42,23 @@ const actionsMutationFields = {
     args: {
       species_id: { type: new GraphQLNonNull(GraphQLInt) },
       name: { type: GraphQLString },
-      two_stage: { type: GraphQLBoolean }
+      two_stage: { type: GraphQLBoolean },
     },
-    resolve: createAction
+    resolve: createAction,
   },
   updateAction: {
     type: actionsType,
     args: {
       id: { type: new GraphQLNonNull(GraphQLInt) },
       name: { type: GraphQLString },
-      two_stage: { type: GraphQLBoolean }
+      two_stage: { type: GraphQLBoolean },
     },
-    resolve: updateAction
-  }
+    resolve: updateAction,
+  },
 };
 
 module.exports = {
+  actionsType,
   actionsQueryFields,
-  actionsMutationFields
+  actionsMutationFields,
 };

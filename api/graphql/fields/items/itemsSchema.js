@@ -3,7 +3,7 @@ const {
   GraphQLString,
   GraphQLInt,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
 } = require("graphql");
 
 const { getItems, createItem, updateItem } = require("./itemsResolves.js");
@@ -13,18 +13,18 @@ const itemsType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLInt },
     action_id: { type: GraphQLInt },
-    name: { type: GraphQLString }
-  })
+    name: { type: GraphQLString },
+  }),
 });
 
 const itemsQueryFields = {
   items: {
     type: new GraphQLList(itemsType),
     args: {
-      action_id: { type: new GraphQLNonNull(GraphQLInt) }
+      action_id: { type: new GraphQLNonNull(GraphQLInt) },
     },
-    resolve: getItems
-  }
+    resolve: getItems,
+  },
 };
 
 const itemsMutationFields = {
@@ -32,22 +32,23 @@ const itemsMutationFields = {
     type: itemsType,
     args: {
       name: { type: new GraphQLNonNull(GraphQLString) },
-      action_id: { type: new GraphQLNonNull(GraphQLInt) }
+      action_id: { type: new GraphQLNonNull(GraphQLInt) },
     },
-    resolve: createItem
+    resolve: createItem,
   },
   updateItem: {
     type: itemsType,
     args: {
       id: { type: new GraphQLNonNull(GraphQLInt) },
       name: { type: GraphQLString },
-      action_id: { type: GraphQLInt }
+      action_id: { type: GraphQLInt },
     },
-    resolve: updateItem
-  }
+    resolve: updateItem,
+  },
 };
 
 module.exports = {
+  itemsType,
   itemsQueryFields,
-  itemsMutationFields
+  itemsMutationFields,
 };
