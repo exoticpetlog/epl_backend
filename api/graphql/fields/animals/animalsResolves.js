@@ -18,6 +18,21 @@ module.exports = {
     if (selections.history) {
       animal.history = await db("history").where({ animal_id: animal.id });
     }
+    if (selections.species) {
+      animal.species = await db("species")
+        .where({ id: animal.species_id })
+        .first();
+    }
+    if (selections.actions) {
+      animal.actions = await db("actions").where({
+        species_id: animal.species_id,
+      });
+      for (let i in animal.actions) {
+        animal.actions[i].items = await db("items").where({
+          action_id: animal.actions[i].id,
+        });
+      }
+    }
     return animal;
   },
 

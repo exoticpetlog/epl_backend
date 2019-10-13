@@ -3,13 +3,13 @@ const {
   GraphQLString,
   GraphQLInt,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
 } = require("graphql");
 
 const {
   getSpecies,
   createSpecies,
-  updateSpecies
+  updateSpecies,
 } = require("./speciesResolves.js");
 
 const speciesType = new GraphQLObjectType({
@@ -17,18 +17,18 @@ const speciesType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLInt },
     name: { type: GraphQLString },
-    org_id: { type: GraphQLInt }
-  })
+    org_id: { type: GraphQLInt },
+  }),
 });
 
 const speciesQueryFields = {
   species: {
     type: new GraphQLList(speciesType),
     args: {
-      org_id: { type: new GraphQLNonNull(GraphQLInt) }
+      org_id: { type: new GraphQLNonNull(GraphQLInt) },
     },
-    resolve: getSpecies
-  }
+    resolve: getSpecies,
+  },
 };
 
 const speciesMutationFields = {
@@ -36,22 +36,23 @@ const speciesMutationFields = {
     type: speciesType,
     args: {
       name: { type: new GraphQLNonNull(GraphQLString) },
-      org_id: { type: new GraphQLNonNull(GraphQLInt) }
+      org_id: { type: new GraphQLNonNull(GraphQLInt) },
     },
-    resolve: createSpecies
+    resolve: createSpecies,
   },
   updateSpecies: {
     type: speciesType,
     args: {
       id: { type: new GraphQLNonNull(GraphQLInt) },
       name: { type: GraphQLString },
-      org_id: { type: GraphQLInt }
+      org_id: { type: GraphQLInt },
     },
-    resolve: updateSpecies
-  }
+    resolve: updateSpecies,
+  },
 };
 
 module.exports = {
+  speciesType,
   speciesQueryFields,
-  speciesMutationFields
+  speciesMutationFields,
 };
